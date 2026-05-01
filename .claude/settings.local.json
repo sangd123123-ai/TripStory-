@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(cd \"C:\\\\Users\\\\박성훈\\\\Desktop\\\\js연습용\\\\TripStory\\\\tripstory\" && npm run build 2>&1)",
+      "Bash(cd \"C:\\\\Users\\\\박성훈\\\\Desktop\\\\js연습용\\\\TripStory\\\\tripstory\" && npm run build)",
+      "Bash(cd /c/Users/박성훈/Desktop/js연습용/TripStory/tripstory && CI=false npm run build 2>&1)",
+      "Bash(cd /c/Users/박성훈/Desktop/js연습용/TripStory/tripstory && node node_modules/.bin/react-scripts build 2>&1 | head -50)",
+      "Bash(cd /c/Users/박성훈/Desktop/js연습용/TripStory/tripstory && cmd /c \"npm run build\" 2>&1)",
+      "Bash(which npm && npm --version && node --version)",
+      "Bash(cd /c/Users/박성훈/Desktop/js연습용/TripStory/tripstory && node node_modules/react-scripts/bin/react-scripts.js build 2>&1)",
+      "Bash(/c/Windows/System32/WindowsPowerShell/v1.0/powershell.exe -Command \"cd 'C:\\\\Users\\\\박성훈\\\\Desktop\\\\js연습용\\\\TripStory\\\\tripstory'; npm run build\" 2>&1)",
+      "Bash(/c/Windows/System32/WindowsPowerShell/v1.0/powershell.exe -Command \"cd 'C:\\\\Users\\\\박성훈\\\\Desktop\\\\js연습용\\\\TripStory\\\\tripstory'; \\\\$env:NODE_OPTIONS='--openssl-legacy-provider'; npm run build\" 2>&1)"
+    ]
+  }
+}

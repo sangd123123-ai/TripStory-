@@ -1,13 +1,8 @@
 // src/assets/api/admin.js
 import axios from 'axios';
 
-// --- API_BASE 계산 ---
-// .env에서 직접 지정 가능하게 열어두고
-// 없으면 현재 호스트:8080 으로 맞춰 (중요: 프론트/백엔드 포트 섞이지 않게 하나로 고정)
-const HOST = process.env.REACT_APP_API_HOST || window.location.hostname;
-const PORT = process.env.REACT_APP_API_PORT || '8080';
-const API_BASE =
-  process.env.REACT_APP_API_BASE || `http://${HOST}:${PORT}`;
+// --- API_BASE: 빈 문자열로 고정 (same-origin) ---
+const API_BASE = '';
 
 console.log('[AdminApi] API_BASE =', API_BASE);
 
