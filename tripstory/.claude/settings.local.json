@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(Get-ChildItem \"C:\\\\Users\\\\박성훈\\\\Desktop\\\\js연습용\\\\TripStory\\\\tripstory\\\\build\\\\static\\\\js\")",
+      "Bash(Select-Object Name, LastWriteTime)",
+      "Bash(Sort-Object LastWriteTime -Descending)"
+    ]
+  }
+}
