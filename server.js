@@ -180,7 +180,7 @@ try {
   console.warn('?ая╕П build serve skipped:', e.message);
 }
 
-console.log("ENV CHECK:", process.env.MONGODB_URI); const MONGODB_URI = process.env.MONGODB_URI;
+console.log("ENV CHECK:", process.env.MONGODB_URI); const MONGODB_URI = "mongodb+srv://sangd123123_db_user:L5xzTtKfnyTpWKsu@cluster0.mf4xhgw.mongodb.net/tripstory?appName=Cluster0";
 
 mongoose
   .connect(MONGODB_URI)
