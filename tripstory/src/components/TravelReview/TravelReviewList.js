@@ -6,7 +6,7 @@ import { IoEyeOutline } from 'react-icons/io5';
 import api from '../../assets/api/index';
 import './TravelReview.css';
 
-const API_BASE = process.env.REACT_APP_API_URL?.trim() || "http://localhost:8080";
+const API_BASE = process.env.REACT_APP_API_URL?.trim() || "";
 const PAGE_SIZE_DEFAULT = 9; // 3x3
 
 export default function TravelReviewList() {

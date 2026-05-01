@@ -40,7 +40,7 @@ function TripStoryWrite({ user }) {
   const getImageUrl = (url) => {
     if (!url) return '/img/profile-placeholder.png';
     if (url.startsWith('http')) return url;
-    return `${process.env.REACT_APP_API_URL || 'http://localhost:8080'}${url}`;
+    return `${process.env.REACT_APP_API_URL || ''}${url}`;
   };
 
   return (

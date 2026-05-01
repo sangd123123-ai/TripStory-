@@ -6,7 +6,7 @@
 import axios from 'axios';
 
 // ✅ axios 인스턴스 생성
-// React의 package.json에 "proxy": "http://localhost:8080" 이 설정되어 있어야 합니다.
+// React의 package.json에 "proxy": "" 이 설정되어 있어야 합니다.
 const api = axios.create({
   baseURL: '/api/tripstory', // ✅ proxy를 통해 자동으로 8080으로 라우팅됨
   withCredentials: true,  // ✅ 쿠키 기반 refresh 토큰 포함

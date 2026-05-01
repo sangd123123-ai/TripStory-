@@ -4,8 +4,8 @@ import { Auth } from '../../assets/api/index';
 import { AuthContext } from '../../context/AuthContext';
 import './Login.css';
 
-// ✅ 백엔드 절대경로 (front.env: REACT_APP_API_URL=http://localhost:8080)
-const API = (process.env.REACT_APP_API_URL || 'http://localhost:8080').replace(/\/$/, '');
+// ✅ 백엔드 절대경로 (front.env: REACT_APP_API_URL=)
+const API = (process.env.REACT_APP_API_URL || '').replace(/\/$/, '');
 
 export default function Login({ onAuthed }) {
   const nav = useNavigate();

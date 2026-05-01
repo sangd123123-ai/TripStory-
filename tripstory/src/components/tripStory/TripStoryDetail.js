@@ -122,7 +122,7 @@ function TripStoryDetail({ user }) {
   const getImageUrl = (url) => {
     if (!url) return '/img/noimage.png';
     if (url.startsWith('http')) return url;
-    return `${process.env.REACT_APP_API_URL || 'http://localhost:8080'}${url}`;
+    return `${process.env.REACT_APP_API_URL || ''}${url}`;
   };
 
   // ✅ 수정

@@ -298,7 +298,7 @@ function ImageGenerateModal({ tripData, onClose, user }) {
   const getImageUrl = (url) => {
     if (!url) return '/img/noimage.png';
     if (url.startsWith('http')) return url;
-    return `${process.env.REACT_APP_API_URL || 'http://localhost:8080'}${url}`;
+    return `${process.env.REACT_APP_API_URL || ''}${url}`;
   };
 
   // AI 이미지 생성 및 트립스토리 미리보기

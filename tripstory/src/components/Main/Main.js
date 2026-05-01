@@ -6,7 +6,7 @@ import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import NoticeModalPost from "./NoticeModalPost";
 import "./Main.css";
 
-const API_BASE = (process.env.REACT_APP_API_URL || "http://localhost:8080").replace(/\/+$/, "");
+const API_BASE = (process.env.REACT_APP_API_URL || "").replace(/\/+$/, "");
 
 // 기존 abs (상대경로 → 절대경로)
 const abs = (src, bustKey) => {

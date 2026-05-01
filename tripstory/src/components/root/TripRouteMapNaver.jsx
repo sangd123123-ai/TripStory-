@@ -77,7 +77,7 @@ const TripRouteMapNaver = ({ result, onClose }) => {
     try {
       if (!placeUrl || !placeUrl.includes("kakao.com")) return null;
       const placeId = placeUrl.split("/").pop();
-      const apiBase = process.env.REACT_APP_API_URL || "http://localhost:8080";
+      const apiBase = process.env.REACT_APP_API_URL || "";
       const url = new URL(`${apiBase}/geo/kakao/${placeId}`);
       if (placeName) url.searchParams.set("name", placeName);
       if (regionName) url.searchParams.set("region", regionName);

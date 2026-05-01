@@ -72,7 +72,7 @@ function ThemeTravelList() {
   const [error, setError] = useState(null);
   const [selectedCategory, setSelectedCategory] = useState('인생샷 감성 여행');
 
-  const API_BASE = process.env.REACT_APP_API_URL || 'http://localhost:8080';
+  const API_BASE = process.env.REACT_APP_API_URL || '';
 
   useEffect(() => {
     const loadTravels = async () => {
