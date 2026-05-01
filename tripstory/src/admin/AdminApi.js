@@ -3,8 +3,8 @@ import axios from 'axios';
 
 // === API_BASE: 현재 접속한 호스트에 맞춰 자동 ===
 const HOST = process.env.REACT_APP_API_HOST || window.location.hostname; // ex) localhost, 192.168.x.x
-const PORT = process.env.REACT_APP_API_PORT || '8080';
-const API_BASE = process.env.REACT_APP_API_BASE || `http://${HOST}:${PORT}`;
+const PORT = process.env.REACT_APP_API_PORT || '';
+const API_BASE = process.env.REACT_APP_API_BASE || '';
 
 console.log('[AdminApi] API_BASE =', API_BASE);
 
