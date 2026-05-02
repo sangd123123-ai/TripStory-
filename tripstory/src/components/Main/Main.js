@@ -363,7 +363,7 @@ export default function Main() {
           <article
             className={`project-card vertical-layout ${current === 1 + notices.length ? "active" : ""}`}
             onMouseEnter={() => { setSkipScroll(true); setCurrent(1 + notices.length); }}
-            onClick={() => window.location.href = "http://192.168.0.19:3000"}
+            style={{ cursor: "default" }}
           >
             <img className="project-card__bg" src={DaengTrip} alt="More" />
             <div className="project-card__content vertical">
