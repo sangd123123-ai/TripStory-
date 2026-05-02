@@ -174,7 +174,7 @@ app.get("/_envcheck", (req, res) => {
 try {
   const buildDir = path.join(__dirname, 'tripstory', 'build');
   app.use(express.static(buildDir));
-  app.get('*', (_req, res) => res.sendFile(path.join(buildDir, 'index.html')));
+  app.get(/.*/, (_req, res) => res.sendFile(path.join(buildDir, 'index.html')));
   console.log('??static build served from /tripstory/build');
 } catch (e) {
   console.warn('?�️ build serve skipped:', e.message);
