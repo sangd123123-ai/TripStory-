@@ -51,6 +51,7 @@ const allowList = new Set([
   'http://127.0.0.1:3000',
   'http://localhost:8080',
   'http://127.0.0.1:8080',
+  'https://tripstory-production-8030.up.railway.app',
   (process.env.CLIENT_ORIGIN || '').replace(/\/$/, ''),
 ].filter(Boolean));
 const LAN3000 = /^http:\/\/192\.168\.\d+\.\d+:3000$/;
