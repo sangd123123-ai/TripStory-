@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import DaengTrip from "../../assets/image/DaengTrip3.jpg";
+import TripStoryBg from "../../assets/image/festival.jpg";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import NoticeModalPost from "./NoticeModalPost";
 import "./Main.css";
@@ -338,7 +339,7 @@ export default function Main() {
             onClick={() => navigate("/story")}
             tabIndex={0}
           >
-            <img className="project-card__bg" src="https://picsum.photos/id/22/1200/800" alt="TripStory" />
+            <img className="project-card__bg" src={TripStoryBg} alt="TripStory" />
             <div className="project-card__content vertical">
               <h3 className="project-card__title">TripStory</h3>
               <p className="project-card__desc">나만의 여행을 기록하고 공유해보세요.</p>
