@@ -2,16 +2,7 @@
 import axios from 'axios';
 
 // ✅ 개발환경(3000 포트)에서는 API_BASE를 '' 로 해서 같은 오리진처럼 보이게 -> 쿠키 붙게
-const isDev = process.env.NODE_ENV !== 'production';
-const isDevOn3000 =
-  isDev && typeof window !== 'undefined' && window.location.port === '3000';
-
-const API_BASE = isDevOn3000
-  ? '' // dev에서 프록시/동일오리진 느낌으로
-  : (process.env.REACT_APP_API_URL ||
-     process.env.REACT_APP_API_BASE ||
-     '').trim() || window.location.origin;
-
+const API_BASE = '';
 // ===== accessToken 메모리/로컬 동기화 =====
 let accessToken =
   (typeof window !== 'undefined' &&
