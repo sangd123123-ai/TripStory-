@@ -28,7 +28,7 @@ async function refresh() {
 const admin = axios.create({
   baseURL: API_BASE,
   withCredentials: true,
-});2
+});
 
 // === 요청 인터셉터: Bearer 자동 첨부 ===
 admin.interceptors.request.use((cfg) => {
