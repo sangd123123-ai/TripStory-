@@ -4,15 +4,38 @@ html, body, #root {
   height: auto;
 }
 
+/* 전역 모바일 기본 설정 */
+* {
+  box-sizing: border-box;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* 모바일 가로 스크롤 방지 */
+body {
+  overflow-x: hidden;
+}
+
 .site {
   display: flex;
   flex-direction: column;
-  min-height: 100vh; /* 전체 페이지 늘어나도록 */
+  min-height: 100vh;
 }
 
 .site-main {
-  flex: 1; /* ✅ 본문이 자연스럽게 푸터 위로 밀리지 않게 */
+  flex: 1;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
+  min-width: 0;
+}
+
+/* 공통 컨테이너 모바일 여백 */
+@media (max-width: 768px) {
+  .site-main > * {
+    min-width: 0;
+  }
 }

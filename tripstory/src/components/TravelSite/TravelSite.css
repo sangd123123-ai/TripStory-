@@ -367,25 +367,49 @@ body {
 ===================================== */
 @media (max-width: 768px) {
   .travel-site-container {
-    padding: 40px 15px; /* ← 50px 15px에서 축소 */
+    padding: 28px 14px 40px;
+  }
+
+  .travel-site-header {
+    margin-bottom: 24px;
   }
 
   .travel-site-header h1 {
-    font-size: 2rem; /* ← 2.2rem에서 축소 */
+    font-size: 1.8rem;
+    gap: 8px;
+  }
+
+  .travel-site-header .subtitle {
+    font-size: 0.95rem;
+  }
+
+  .category-nav {
+    gap: 8px;
+    margin-bottom: 24px;
+  }
+
+  .category-btn {
+    padding: 8px 18px;
+    font-size: 0.88rem;
   }
 
   /* 모바일에선 한 컬럼 */
   .sites-grid {
     column-count: 1;
-    column-gap: 18px; /* 기존 간격 감안 */
+    column-gap: 0;
   }
 
   .site-card {
-    border-radius: 16px; /* ← 18px에서 축소 */
+    border-radius: 14px;
+    margin-bottom: 16px;
   }
 
   .site-card-header {
-    padding: 14px 18px 6px; /* ← 더 축소 */
+    padding: 14px 16px 6px;
+  }
+
+  .site-name {
+    font-size: 1.05rem;
   }
 
   .description-recommend-box,
@@ -394,11 +418,23 @@ body {
   .region-info,
   .toggle-button,
   .pros-cons-section {
-    margin-left: 18px; /* ← 모바일 패딩 축소 */
-    margin-right: 18px;
+    margin-left: 16px;
+    margin-right: 16px;
   }
 
   .site-card-footer {
-    padding: 14px 18px 18px; /* ← 모바일 패딩 축소 */
+    padding: 12px 16px 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .travel-site-container {
+    padding: 20px 12px 32px;
+  }
+
+  .travel-site-header h1 {
+    font-size: 1.5rem;
+    flex-direction: column;
+    gap: 4px;
   }
 }

@@ -150,7 +150,7 @@ body {
   margin-bottom: 28px;             /* was 40px */
 }
 @media (max-width: 992px) { .review-grid { grid-template-columns: repeat(2, 1fr); } }
-@media (max-width: 576px) { .review-grid { grid-template-columns: 1fr; } }
+@media (max-width: 576px) { .review-grid { grid-template-columns: 1fr; gap: 12px; } }
 
 /* Card - Minimal Style */
 .review-card {
@@ -744,4 +744,116 @@ body {
 .travel-review-container .review-card:focus-visible {
   outline: none !important;
   box-shadow: none !important;
+}
+
+/* ============================================================
+   📱 모바일 반응형
+   ============================================================ */
+@media (max-width: 768px) {
+  .travel-review-container {
+    padding: 16px 12px;
+  }
+
+  .review-header {
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+
+  .review-title {
+    font-size: 1.3rem;
+  }
+
+  .filter-section {
+    padding: 12px;
+  }
+
+  .filter-buttons {
+    gap: 6px;
+  }
+
+  .filter-btn {
+    padding: 6px 12px;
+    font-size: 0.85rem;
+  }
+
+  /* 상세 페이지 */
+  .detail-container {
+    padding: 16px 14px;
+  }
+
+  .detail-header {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .action-buttons {
+    width: 100%;
+    justify-content: flex-end;
+  }
+
+  .detail-title {
+    font-size: 1.25rem;
+  }
+
+  .author-section {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .stats-detail {
+    gap: 10px;
+    font-size: 0.88rem;
+  }
+
+  .hashtag-like-row {
+    flex-direction: column;
+    gap: 10px;
+    align-items: flex-start;
+  }
+
+  /* 댓글 들여쓰기 축소 */
+  .comment-item.depth-1 { margin-left: 14px; }
+  .comment-item.depth-2 { margin-left: 24px; }
+  .comment-item.is-reply { margin-left: 14px; }
+
+  /* 이미지 슬라이더 */
+  .image-slider {
+    margin-bottom: 20px;
+  }
+
+  /* 페이지네이션 */
+  .pagination {
+    gap: 4px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .pagination-btn,
+  .pagination-arrow {
+    min-width: 32px;
+    height: 32px;
+    font-size: 0.85rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .review-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .card-image {
+    height: 180px;
+  }
+
+  .form-buttons {
+    flex-direction: column;
+  }
+
+  .cancel-btn,
+  .submit-btn {
+    width: 100%;
+    text-align: center;
+  }
 }

@@ -413,32 +413,62 @@
   to { opacity: 1; transform: translateY(0); } 
 }
 
+@media (max-width: 1024px) {
+  .theme-grid {
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 24px;
+  }
+}
+
 @media (max-width: 768px) {
   .theme-container {
-    padding: 60px 15px;
+    padding: 32px 14px 40px;
   }
-  .theme-header h1 { 
-    font-size: 2.2rem; 
+  .theme-header {
+    margin-bottom: 28px;
   }
-  .theme-grid { 
-    grid-template-columns: 1fr; 
-    gap: 20px;
-    padding: 0 5px;
+  .theme-header h1 {
+    font-size: 1.8rem;
   }
-  .theme-category-filter { 
-    gap: 8px; 
+  .theme-header p {
+    font-size: 1rem;
   }
-  .theme-category-btn { 
-    padding: 10px 20px; 
-    font-size: 0.9rem; 
+  .theme-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+    padding: 0;
   }
-  .theme-image { 
-    height: 200px; /* ← 모바일은 더 축소 */
+  .theme-category-filter {
+    gap: 8px;
+    margin-bottom: 24px;
+  }
+  .theme-category-btn {
+    padding: 9px 18px;
+    font-size: 0.88rem;
+  }
+  .theme-image {
+    height: 190px;
+  }
+  .theme-content {
+    padding: 14px 16px;
+  }
+  .theme-title {
+    font-size: 1.15rem;
+    min-height: unset;
   }
   .theme-info {
     grid-template-columns: 1fr;
   }
   .theme-extra {
     grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .theme-container {
+    padding: 24px 12px 32px;
+  }
+  .theme-image {
+    height: 170px;
   }
 }

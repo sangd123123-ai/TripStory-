@@ -47,6 +47,12 @@ export const HeaderWrap = styled.header`
   align-items: center;
   padding: 0 40px;
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
+
+  @media (max-width: 768px) {
+    height: 60px;
+    padding: 0 16px;
+    grid-template-columns: auto 1fr auto;
+  }
 `;
 
 
@@ -58,10 +64,24 @@ export const Logo = styled.h1`
   cursor: pointer;
 `;
 
+export const LogoImg = styled.img`
+  height: 60px;
+  cursor: pointer;
+  display: block;
+
+  @media (max-width: 768px) {
+    height: 42px;
+  }
+`;
+
 export const Nav = styled.nav`
   justify-self: center;
   min-width: 0;        /* ← 이거 없으면 2줄로 밀림 */
   overflow: visible;   /* ✅ 드롭다운이 밖으로 자연스럽게 펼쳐지게 */
+
+  @media (max-width: 768px) {
+    display: none;
+  }
 
   ul {
     display: flex;
@@ -160,6 +180,10 @@ export const RightArea = styled.div`
   display: flex;
   align-items: center;
   gap: 8px;
+
+  @media (max-width: 768px) {
+    display: none;
+  }
 `;
 
 export const LoginBtn = styled.button`
@@ -183,6 +207,105 @@ export const LoginBtn = styled.button`
 
   &:active {
     transform: translateY(0);
+  }
+`;
+
+export const HamburgerBtn = styled.button`
+  display: none;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 24px;
+  height: 18px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  z-index: 1100;
+  flex-shrink: 0;
+
+  span {
+    display: block;
+    width: 100%;
+    height: 2px;
+    background: ${scheme.headerText};
+    border-radius: 2px;
+    transition: all 0.3s ease;
+    transform-origin: left center;
+  }
+
+  &.open span:nth-child(1) { transform: rotate(40deg) translate(2px, -1px); }
+  &.open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
+  &.open span:nth-child(3) { transform: rotate(-40deg) translate(2px, 1px); }
+
+  @media (max-width: 768px) {
+    display: flex;
+  }
+`;
+
+export const MobileNav = styled.div`
+  display: none;
+
+  @media (max-width: 768px) {
+    display: ${({ $open }) => ($open ? 'flex' : 'none')};
+    position: fixed;
+    top: 60px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: ${scheme.headerBg};
+    z-index: 990;
+    flex-direction: column;
+    overflow-y: auto;
+    padding-bottom: 24px;
+
+    .mobile-nav-item {
+      padding: 16px 24px;
+      color: ${scheme.headerText};
+      font-size: 1.05rem;
+      font-weight: 600;
+      cursor: pointer;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      transition: background 0.15s ease;
+    }
+
+    .mobile-nav-item:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .mobile-nav-sub {
+      padding: 12px 24px 12px 44px;
+      color: ${scheme.accent};
+      font-size: 0.95rem;
+      font-weight: 500;
+      cursor: pointer;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+      transition: background 0.15s ease;
+    }
+
+    .mobile-nav-sub:hover {
+      background: rgba(255, 255, 255, 0.06);
+    }
+
+    .mobile-user-section {
+      margin-top: auto;
+      padding: 20px 24px;
+      border-top: 1px solid rgba(255, 255, 255, 0.15);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .mobile-username {
+      color: ${scheme.accent};
+      font-size: 1rem;
+      font-weight: 600;
+    }
+
+    .mobile-btn-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
   }
 `;
 

@@ -53,6 +53,21 @@
 
 @media (max-width: 900px) {
   .body {
-    margin-left: 0; /* 모바일에서는 프로필이 위로 내려가므로 여백 제거 */
+    margin-left: 0;
+    margin-top: 0;
+    padding: 0 12px;
+  }
+
+  .mypage-content-wrapper {
+    flex-direction: column;
+  }
+
+  .mypage-section-card {
+    padding: 20px 16px;
+    margin-bottom: 16px;
+  }
+
+  .right-content-wrapper {
+    gap: 16px;
   }
 }

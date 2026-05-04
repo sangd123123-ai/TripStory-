@@ -506,19 +506,31 @@
   .product-modal-image { border-radius: 24px 24px 0 0; min-height: 300px; }
 }
 @media (max-width: 768px) {
-  .local-market-wrapper { padding: 24px 16px; }
-  .market-banner-v2 { flex-direction: column; padding: 28px 24px; text-align: center; }
-  .banner-title { font-size: 1.8rem; }
-  .banner-stats { justify-content: center; }
-  .product-grid { grid-template-columns: 1fr 1fr; gap: 16px; }
-  .product-card-image { height: 180px; }
-  .product-modal-info { padding: 28px 24px; }
-  .product-modal-title { font-size: 1.5rem; }
-  .filter-bar { flex-wrap: wrap; }
-  .filter-result-count { width: 100%; text-align: center; }
+  .local-market-wrapper { padding: 20px 14px; }
+  .market-banner-v2 { flex-direction: column; padding: 24px 20px; text-align: center; gap: 16px; }
+  .banner-title { font-size: 1.6rem; }
+  .banner-subtitle { font-size: 0.95rem; }
+  .banner-stats { justify-content: center; gap: 10px; }
+  .banner-stats span { padding: 6px 12px; font-size: 0.85rem; }
+  .banner-coupon-btn { padding: 12px 24px; font-size: 0.95rem; width: 100%; }
+  .product-grid { grid-template-columns: 1fr 1fr; gap: 14px; }
+  .product-card-image { height: 160px; }
+  .product-modal-info { padding: 24px 20px; gap: 14px; }
+  .product-modal-title { font-size: 1.4rem; }
+  .product-modal-price--row { grid-template-columns: 1fr; gap: 10px; }
+  .filter-bar { flex-wrap: wrap; gap: 8px; }
+  .filter-result-count { width: 100%; text-align: center; margin-left: 0; }
+  .filter-select { flex: 1; min-width: 120px; }
+  .search-input-v2 { padding: 12px 16px; }
 }
+
 @media (max-width: 480px) {
   .product-grid { grid-template-columns: 1fr; }
-  .banner-title { font-size: 1.5rem; }
-  .product-card-image { height: 220px; }
+  .banner-title { font-size: 1.4rem; }
+  .product-card-image { height: 200px; }
+  .product-card-body { padding: 14px; }
+  .product-card-title { font-size: 1rem; }
+  .product-modal-grid { grid-template-columns: 1fr; }
+  .product-modal-image { border-radius: 24px 24px 0 0; min-height: 220px; }
+  .progress-steps-row { grid-template-columns: repeat(5, 1fr); gap: 4px; }
 }
