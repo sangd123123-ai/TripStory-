@@ -9,6 +9,7 @@ const dotenv = require('dotenv');
 const helmet = require('helmet');
 const morgan = require('morgan');
 const rateLimit = require('express-rate-limit');
+const compression = require('compression');
 
 dotenv.config();
 
@@ -34,7 +35,8 @@ const PORT = process.env.PORT || 8080;
 app.set('trust proxy', ['loopback', 'linklocal', 'uniquelocal']);
 
 // ====== 미들?�어 ======
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+app.use(compression());
+app.use('/uploads', express.static(path.join(__dirname, 'uploads'), { maxAge: '7d' }));
 app.use(cookieParser());
 app.use(express.json({ limit: '25mb' }));
 app.use(express.urlencoded({ extended: true, limit: '25mb' }));
@@ -186,7 +188,7 @@ app.get("/_envcheck", (req, res) => {
 // ====== React ?�적 빌드 ?�빙 (?�을 ?�만) ======
 try {
   const buildDir = path.join(__dirname, 'tripstory', 'build');
-  app.use(express.static(buildDir));
+  app.use(express.static(buildDir, { maxAge: '1y', immutable: true }));
   app.get(/.*/, (_req, res) => res.sendFile(path.join(buildDir, 'index.html')));
   console.log('??static build served from /tripstory/build');
 } catch (e) {

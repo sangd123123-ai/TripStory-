@@ -1,53 +1,41 @@
 // src/App.js
 import { Routes, Route, Navigate, useLocation, useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect, useState, lazy, Suspense } from "react";
 import axios from "axios";
 import { Auth } from "./assets/api/index";
 
-// 레이아웃
+// 레이아웃 (항상 필요 → 일반 import 유지)
 import Header from "./components/Main/Header";
 import Footer from "./components/Main/Footer";
 import { GlobalStyle } from "./components/Main/MainStyled";
 
-// 기본 페이지
-import Main from "./components/Main/Main";
-import Login from "./components/Main/Login";
-import Register from "./components/Main/Register";
-
-// 마이페이지
-import MyPageMain from "./components/mypage/MyPageMain";
-import MyTrip from "./components/mypage/MyTrip";
-import TravelStamp from "./components/mypage/TravelStamp";
-import EditProfile from "./components/mypage/EditProfile";
-
-// 여행/테마/리뷰
-import FestivalList from "./components/Festival/FestivalList";
-import ThemeTravelList from "./components/ThemeTravel/ThemeTravelList";
-import TravelReviewList from "./components/TravelReview/TravelReviewList";
-import TravelReviewDetail from "./components/TravelReview/TravelReviewDetail";
-
-// AI 여행 추천
-import AITripCourse from "./components/aitrips/AiTripCourse";
-
-// 🔥 여행 사이트 추천 페이지 (/site)
-import TravelSiteList from "./components/TravelSite/TravelSiteList";
-
-// 관리자 관련
-import AdminLayout from "./admin/AdminLayout";
-import AdminHome from "./admin/AdminHome";
-import AdminNotice from "./admin/AdminNotice";
-import AdminUsers from "./admin/AdminUsers";
-import AdminLogin from "./admin/AdminAuth"; // 관리자 로그인 화면
-import TravelReviewForm from "./components/TravelReview/TravelReviewForm";
-import WeatherMap from "./components/weather/WeatherMap";
-
-// 🎒 TripStory
-import TripStoryWrite from "./components/tripStory/TripStoryWrite";
-import TripStoryFeed from "./components/tripStory/TripStoryFeed";
-import TripStoryDetail from "./components/tripStory/TripStoryDetail";
-import TripStorySearch from "./components/tripStory/TripStorySearch";
-import AdminApproval from "./admin/AdminApproval";
-import LocalMarket from "./components/LocalMarket/LocalMarket";
+// 페이지 컴포넌트 (lazy load)
+const Main           = lazy(() => import("./components/Main/Main"));
+const Login          = lazy(() => import("./components/Main/Login"));
+const Register       = lazy(() => import("./components/Main/Register"));
+const MyPageMain     = lazy(() => import("./components/mypage/MyPageMain"));
+const MyTrip         = lazy(() => import("./components/mypage/MyTrip"));
+const TravelStamp    = lazy(() => import("./components/mypage/TravelStamp"));
+const EditProfile    = lazy(() => import("./components/mypage/EditProfile"));
+const FestivalList   = lazy(() => import("./components/Festival/FestivalList"));
+const ThemeTravelList    = lazy(() => import("./components/ThemeTravel/ThemeTravelList"));
+const TravelReviewList   = lazy(() => import("./components/TravelReview/TravelReviewList"));
+const TravelReviewDetail = lazy(() => import("./components/TravelReview/TravelReviewDetail"));
+const TravelReviewForm   = lazy(() => import("./components/TravelReview/TravelReviewForm"));
+const AITripCourse   = lazy(() => import("./components/aitrips/AiTripCourse"));
+const TravelSiteList = lazy(() => import("./components/TravelSite/TravelSiteList"));
+const WeatherMap     = lazy(() => import("./components/weather/WeatherMap"));
+const TripStoryFeed   = lazy(() => import("./components/tripStory/TripStoryFeed"));
+const TripStoryDetail = lazy(() => import("./components/tripStory/TripStoryDetail"));
+const TripStorySearch = lazy(() => import("./components/tripStory/TripStorySearch"));
+const TripStoryWrite  = lazy(() => import("./components/tripStory/TripStoryWrite"));
+const LocalMarket    = lazy(() => import("./components/LocalMarket/LocalMarket"));
+const AdminLayout    = lazy(() => import("./admin/AdminLayout"));
+const AdminHome      = lazy(() => import("./admin/AdminHome"));
+const AdminNotice    = lazy(() => import("./admin/AdminNotice"));
+const AdminUsers     = lazy(() => import("./admin/AdminUsers"));
+const AdminLogin     = lazy(() => import("./admin/AdminAuth"));
+const AdminApproval  = lazy(() => import("./admin/AdminApproval"));
 
 // ──────────────────────────────
 // 관리자 refresh fallback (adminAuth 전용 세션 복구용)
@@ -273,6 +261,7 @@ function AppShell() {
       />
 
       <main style={{ minHeight: "calc(100vh - 220px)" }}>
+        <Suspense fallback={<div style={{ padding: "2rem", color: "#555" }}>로딩 중...</div>}>
         <Routes>
           {/* 홈 */}
           <Route path="/" element={<Main user={user} />} />
@@ -410,6 +399,7 @@ function AppShell() {
           {/* 잘못된 경로는 홈으로 */}
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
+        </Suspense>
       </main>
 
       <Footer />
