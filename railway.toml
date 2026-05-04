@@ -1,5 +1,5 @@
 [build]
-buildCommand = "npm install && npm install --prefix tripstory && npm run build --prefix tripstory"
+buildCommand = "npm install && npm install --prefix tripstory && CI=false npm run build --prefix tripstory"
 
 [deploy]
 startCommand = "node server.js"
