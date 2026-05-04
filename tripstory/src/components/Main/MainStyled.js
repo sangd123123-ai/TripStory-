@@ -239,6 +239,10 @@ export const HamburgerBtn = styled.button`
 
   @media (max-width: 768px) {
     display: flex;
+    grid-column: 3;
+    justify-self: end;
+    padding: 8px;
+    margin-right: -8px;
   }
 `;
 
