@@ -241,8 +241,6 @@ export const HamburgerBtn = styled.button`
     display: flex;
     grid-column: 3;
     justify-self: end;
-    padding: 8px;
-    margin-right: -8px;
   }
 `;
 
