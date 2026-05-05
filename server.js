@@ -185,15 +185,6 @@ app.get("/_envcheck", (req, res) => {
 });
 
 
-// ====== React ?�적 빌드 ?�빙 (?�을 ?�만) ======
-try {
-  const buildDir = path.join(__dirname, 'tripstory', 'build');
-  app.use(express.static(buildDir, { maxAge: '1y', immutable: true }));
-  app.get(/.*/, (_req, res) => res.sendFile(path.join(buildDir, 'index.html')));
-  console.log('??static build served from /tripstory/build');
-} catch (e) {
-  console.warn('?�️ build serve skipped:', e.message);
-}
 
 console.log("ENV CHECK:", process.env.MONGODB_URI); const MONGODB_URI = "mongodb+srv://sangd123123_db_user:L5xzTtKfnyTpWKsu@cluster0.mf4xhgw.mongodb.net/tripstory?appName=Cluster0";
 

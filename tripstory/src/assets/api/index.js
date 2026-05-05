@@ -1,8 +1,8 @@
 // src/assets/api/index.js
 import axios from 'axios';
 
-// ✅ 개발환경(3000 포트)에서는 API_BASE를 '' 로 해서 같은 오리진처럼 보이게 -> 쿠키 붙게
-const API_BASE = '';
+// 개발환경: '' (proxy 사용), 프로덕션: REACT_APP_API_URL (Railway URL)
+const API_BASE = process.env.REACT_APP_API_URL || '';
 // ===== accessToken 메모리/로컬 동기화 =====
 let accessToken =
   (typeof window !== 'undefined' &&
