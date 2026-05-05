@@ -235,14 +235,18 @@ function AppShell() {
           loading={true}
           reload={() => {}}
         />
-        <main
-          style={{
-            minHeight: "calc(100vh - 220px)",
-            color: "#555",
-            padding: "2rem",
-          }}
-        >
-          로딩 중...
+        <main style={{ minHeight: "calc(100vh - 140px)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+          <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "16px", color: "#64748b" }}>
+            <div style={{
+              width: "40px", height: "40px",
+              border: "3px solid #e2e8f0",
+              borderTop: "3px solid #0fb9c9",
+              borderRadius: "50%",
+              animation: "spin 0.8s linear infinite",
+            }} />
+            <span style={{ fontSize: "14px" }}>로딩 중...</span>
+            <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
+          </div>
         </main>
         <Footer />
       </>
@@ -260,8 +264,13 @@ function AppShell() {
         reload={() => setStampRefetchKey((k) => k + 1)}
       />
 
-      <main style={{ minHeight: "calc(100vh - 220px)" }}>
-        <Suspense fallback={<div style={{ padding: "2rem", color: "#555" }}>로딩 중...</div>}>
+      <main style={{ minHeight: "calc(100vh - 140px)" }}>
+        <Suspense fallback={
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "center", minHeight: "300px", gap: "12px", color: "#64748b" }}>
+            <div style={{ width: "32px", height: "32px", border: "3px solid #e2e8f0", borderTop: "3px solid #0fb9c9", borderRadius: "50%", animation: "spin 0.8s linear infinite" }} />
+            <span style={{ fontSize: "14px" }}>로딩 중...</span>
+          </div>
+        }>
         <Routes>
           {/* 홈 */}
           <Route path="/" element={<Main user={user} />} />

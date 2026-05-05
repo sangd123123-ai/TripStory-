@@ -172,7 +172,7 @@ export default function Main() {
     let alive = true;
     (async () => {
       try {
-        const { data } = await axios.get(`/notices`, {
+        const { data } = await axios.get(`${API_BASE}/notices`, {
           params: { limit: 5, _ts: Date.now() },
           withCredentials: true,
         });
@@ -205,7 +205,7 @@ export default function Main() {
 
     const fetchCourses = async () => {
       try {
-        const { data } = await axios.get("/api/weather-course", {
+        const { data } = await axios.get(`${API_BASE}/api/weather-course`, {
           params: { limit: 4, region },
           withCredentials: true,
           timeout: 4000,
@@ -265,7 +265,7 @@ export default function Main() {
     let alive = true;
     (async () => {
       try {
-        const { data } = await axios.get("/api/weekly-festival", {
+        const { data } = await axios.get(`${API_BASE}/api/weekly-festival`, {
           params: { windowDays: 7, limit: 8 },
           withCredentials: true,
         });
