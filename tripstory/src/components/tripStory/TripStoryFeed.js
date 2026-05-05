@@ -81,7 +81,7 @@ function TripStoryFeed({ user }) {
 
   useEffect(() => {
     // 스토리 목록 가져오기
-    fetchStories().then(setStories);
+    fetchStories().then(data => setStories(Array.isArray(data) ? data : []));
 
     // 내 여행기록 가져오기
     if (user) {
