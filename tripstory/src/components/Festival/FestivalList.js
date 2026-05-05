@@ -56,8 +56,7 @@ function FestivalList() {
   const [error, setError] = useState(null);
   const [selectedCategory, setSelectedCategory] = useState('불꽃축제');
 
-  // ✅ 백엔드 API 주소
-  const API_BASE = '';
+  const API_BASE = process.env.REACT_APP_API_URL || '';
 
   useEffect(() => {
     const loadFestivals = async () => {
