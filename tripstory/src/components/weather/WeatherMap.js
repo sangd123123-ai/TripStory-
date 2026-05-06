@@ -99,12 +99,12 @@ export default function WeatherMap() {
     const [w, addrFromReverse] = await Promise.all([
       fetchCurrentWeather({ lat, lon, apiKey: WEATHER_API_KEY }).catch(
         (err) => {
-          console.warn("[fetchCurrentWeather 실패]", err);
+          console.error("[fetchCurrentWeather 실패]", err);
           return null;
         }
       ),
       reverseGeocode(lat, lon).catch((err) => {
-        console.warn("[reverseGeocode 실패]", err);
+        console.error("[reverseGeocode 실패]", err);
         return "";
       }),
     ]);

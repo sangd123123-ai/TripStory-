@@ -35,7 +35,7 @@ const MyPageMain = ({ user }) => {
           setError('');
         }
       } catch (err1) {
-        console.warn('[MyPageMain] /auth/me 실패, /admin-auth/me 시도', err1);
+        console.error('[MyPageMain] /auth/me 실패', err1);
         try {
           // 2) 관리자 세션 fallback (/admin-auth/me)
           const res2 = await api.get('/admin-auth/me', { withCredentials: true });

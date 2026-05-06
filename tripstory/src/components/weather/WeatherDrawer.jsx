@@ -82,7 +82,7 @@ export default function WeatherDrawer({
 
         setPlaces(data.places || []);
       } catch (err) {
-        console.warn("[WeatherDrawer] fetch 실패", err);
+        console.error("[WeatherDrawer] fetch 실패", err);
         setPlaces([]);
       } finally {
         setLoading(false);

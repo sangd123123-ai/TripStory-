@@ -388,7 +388,6 @@ const hashtagArray = formData.hashtags
     setTimeout(async () => {
       await fetchTrips();
       await fetchPendingTrips();
-      console.log('✅ 승인 완료 후 목록 자동 갱신 성공');
     }, 1000);
     
     if (goToStamp)
@@ -466,8 +465,7 @@ const hashtagArray = formData.hashtags
       setTimeout(async () => {
         await fetchTrips();
         await fetchPendingTrips();
-        console.log('✅ 모두 승인 완료 후 목록 자동 갱신 성공');
-      }, 1000);
+        }, 1000);
 
     } catch (error) {
       console.error('모두 승인 처리 중 오류 발생:', error);

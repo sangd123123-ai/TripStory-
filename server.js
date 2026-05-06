@@ -144,8 +144,6 @@ function mountAuto(basePathOrApp, modPath) {
 mountAuto('/auth', './routers/auth');                 // ???�기???�동?�별
 mountAuto('/admin-auth', './routers/adminAuth');
 mountAuto('/admin', './routers/adminNoticeRouter');
-mountAuto('/admin/notice', './routers/adminNoticeRouter');
-mountAuto('/admin/notices', './routers/adminNoticeRouter');
 mountAuto('/admin', './routers/adminUserRouter');
 mountAuto('/api/ai', './routers/aiRouter');
 mountAuto('/admin-stats', './routers/adminStatsRouter');
@@ -186,7 +184,7 @@ app.get("/_envcheck", (req, res) => {
 
 
 
-console.log("ENV CHECK:", process.env.MONGODB_URI); const MONGODB_URI = "mongodb+srv://sangd123123_db_user:L5xzTtKfnyTpWKsu@cluster0.mf4xhgw.mongodb.net/tripstory?appName=Cluster0";
+const MONGODB_URI = process.env.MONGODB_URI;
 
 mongoose
   .connect(MONGODB_URI)

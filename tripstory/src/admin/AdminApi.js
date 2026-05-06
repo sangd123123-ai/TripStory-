@@ -1,10 +1,7 @@
 // src/assets/api/admin.js — 충돌 없는 전체본
 import axios from 'axios';
 
-// === API_BASE: 빈 문자열로 고정 (same-origin) ===
-const API_BASE = '';
-
-console.log('[AdminApi] API_BASE =', API_BASE);
+const API_BASE = process.env.REACT_APP_API_URL || '';
 
 // === 토큰 로컬 저장키(관리자 전용) ===
 const KEY = 'adminAccess';

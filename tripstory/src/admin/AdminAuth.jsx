@@ -93,12 +93,7 @@ export default function AdminAuthPage() {
       // 여기까지 왔으면 토큰 하나도 못 얻은 상황
       throw new Error('관리자 토큰을 받지 못했습니다.');
     } catch (e) {
-      console.log('[AdminLogin error]', {
-        status: e?.response?.status,
-        url: e?.config?.url,
-        data: e?.response?.data,
-        message: e?.message,
-      });
+      console.error('[AdminLogin error]', e?.response?.data || e?.message);
       setErr(
         e?.response?.data?.msg ||
           e?.response?.data?.message ||

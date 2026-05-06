@@ -113,10 +113,7 @@ function AppShell() {
           setAdmin(me);
         }
 
-        console.log(
-          "✅ OAuth 로그인 성공:",
-          me?.userId || me?.email || "(unknown)"
-        );
+
       } catch (err) {
         console.error("❌ OAuth 유저 정보 실패:", err);
       } finally {

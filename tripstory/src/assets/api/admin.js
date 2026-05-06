@@ -1,10 +1,7 @@
 // src/assets/api/admin.js
 import axios from 'axios';
 
-// --- API_BASE: 빈 문자열로 고정 (same-origin) ---
-const API_BASE = '';
-
-console.log('[AdminApi] API_BASE =', API_BASE);
+const API_BASE = process.env.REACT_APP_API_URL || '';
 
 // --- 토큰 저장 (관리자만 쓰는 전용 key) ---
 const KEY = 'adminAccess';

@@ -215,7 +215,7 @@ export default function Main() {
         setWeatherCourses(list.slice(0, 4));
       } catch (err) {
         if (!alive) return;
-        console.warn("[weather-course] list fallback:", err?.message || err);
+        console.error("[weather-course] list fallback:", err?.message || err);
         setWeatherCourses([]);
       }
     };
@@ -249,7 +249,7 @@ export default function Main() {
         });
       } catch (err) {
         if (!alive) return;
-        console.warn("[openweather] error:", err?.message || err);
+        console.error("[openweather] error:", err?.message || err);
         setWeatherSummary({ sky: "정보 없음", temp: null, msg: "정보 없음 / 온도 없음" });
       }
     };
@@ -272,7 +272,7 @@ export default function Main() {
         if (!alive) return;
         setWeeklyFestivals(data?.list || []);
       } catch (e) {
-        console.warn("[weekly-festival] load fail:", e?.message || e);
+        console.error("[weekly-festival] load fail:", e?.message || e);
       }
     })();
     return () => { alive = false; };

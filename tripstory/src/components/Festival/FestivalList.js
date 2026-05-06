@@ -18,6 +18,7 @@ const FestivalCard = ({ festival }) => {
           src={festival.imageUrl || 'https://via.placeholder.com/400x250?text=Festival'}
           alt={festival.title}
           loading="lazy"
+          onError={(e) => { e.target.onerror = null; e.target.src = 'https://via.placeholder.com/400x250?text=Festival'; }}
         />
         <span className="festival-category-badge">{festival.category}</span>
       </div>
@@ -67,16 +68,12 @@ function FestivalList() {
         // ✅ 백엔드 API 호출
         const url = `${API_BASE}/api/festivals/category/${encodeURIComponent(selectedCategory)}`;
         
-        console.log('🔍 요청 URL:', url);
-
         const response = await fetch(url, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
           },
         });
-
-        console.log('📡 응답 상태:', response.status);
 
         if (!response.ok) {
           throw new Error(`서버 응답 오류: ${response.status}`);
@@ -90,8 +87,6 @@ function FestivalList() {
         }
 
         const result = await response.json();
-        console.log('✅ 응답 데이터:', result);
-
         if (!result.success) {
           throw new Error(result.message || '데이터를 불러오는데 실패했습니다.');
         }

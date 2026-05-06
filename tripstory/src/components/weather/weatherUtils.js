@@ -148,7 +148,7 @@ export async function reverseGeocode(lat, lon) {
         return full;
       }
     } catch (err) {
-      console.warn("카카오 reverseGeocode 실패", err);
+      console.error("카카오 reverseGeocode 실패", err);
     }
 
     return "";
