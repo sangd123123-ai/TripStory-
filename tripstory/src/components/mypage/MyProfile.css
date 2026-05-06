@@ -6,15 +6,12 @@
   box-shadow: 0 8px 24px rgba(79, 195, 247, 0.2);
   text-align: center;
   border: 3px solid #BBDEFB;
-  /* ✅ 고정형 + 정렬 개선 */
-  position: fixed;
-  top: 100px;         /* 헤더보다 살짝 아래 */
-  left: clamp(40px, calc((100% - 1200px) / 2), 160px); 
-  /* 화면 크기에 맞춰 부드럽게 조정됨 */
+  position: sticky;
+  top: 100px;
   width: 280px;
-  z-index: 5;
+  flex-shrink: 0;
+  align-self: flex-start;
   transition: all 0.3s ease;
-  border-radius: 24px;
 }
 
 main, .mypage-container, .mypage-wrapper {
