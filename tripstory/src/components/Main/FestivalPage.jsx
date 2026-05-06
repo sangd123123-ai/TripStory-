@@ -2,6 +2,8 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+
+const API_BASE = process.env.REACT_APP_API_URL || '';
 import "./FestivalPage.css";
 
 const FestivalPage = () => {
@@ -15,7 +17,7 @@ const FestivalPage = () => {
       try {
         // 백엔드 프록시에서 가공된 축제정보 받아온다고 가정
         // 예: /api/festival?upcoming=true
-        const { data } = await axios.get("/api/festival", {
+        const { data } = await axios.get(`${API_BASE}/api/festival`, {
           params: { upcoming: true },
           withCredentials: true,
         });

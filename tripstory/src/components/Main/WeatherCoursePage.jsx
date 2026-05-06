@@ -1,5 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import axios from "axios";
+
+const API_BASE = process.env.REACT_APP_API_URL || '';
 import "./WeatherCoursePage.css";
 import { useNavigate } from "react-router-dom";
 
@@ -39,7 +41,7 @@ export default function WeatherCoursePage({ region = "seoul", limit = 4 }) {
     (async () => {
       try {
         // 1) 서버 데이터 (라우터 그대로 사용)
-        const { data } = await axios.get("/api/weather-course", {
+        const { data } = await axios.get(`${API_BASE}/api/weather-course`, {
           params: { region, limit },
           withCredentials: true,
         });
