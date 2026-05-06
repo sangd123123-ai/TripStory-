@@ -9,15 +9,14 @@ const mongoose = require('mongoose');
 const Trip = require('../models/tripSchema');
 const router = express.Router();
 
-// ✅ OpenAI 초기화
-const client = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
-
 // ==============================
 // 🎯 AI 여행 코스 추천 API
 // ==============================
 router.post('/trip', async (req, res) => {
+  if (!process.env.OPENAI_API_KEY) {
+    return res.status(503).json({ error: 'AI 서비스가 설정되지 않았습니다.' });
+  }
+  const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
   let { region, style, duration, people, budget, transport } = req.body;
   console.log('📦 req.body:', req.body);
 
