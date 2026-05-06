@@ -5,8 +5,8 @@ import styled from "styled-components";
 export const PageWrap = styled.div`
   width: 100%;
   max-width: 1100px;
-  margin: 80px auto 60px;
-  padding: 0 16px;
+  margin: 0 auto;
+  padding: 40px 16px;
 `;
 
 /* 지도 카드 */

@@ -44,16 +44,9 @@
   font-family: 'Pretendard', 'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
 }
 
-/* ===== 전역 배경 재정의 (메인 배경 완전 덮기) ===== */
-html, body, #root {
-  height: 100%;
-}
-body {
-  background-color: var(--bg-light) !important;  /* 화면 전체 밝은 배경으로 통일 */
-  background-image: none !important;             /* 메인(상위) 배경이미지 보이지 않도록 제거 */
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
+/* ===== 여행후기 페이지 배경 ===== */
+.travel-review-container {
+  background-color: var(--bg-light);
 }
 
 /* ==== Global Container (narrower & cleaner) ==== */

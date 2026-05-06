@@ -2,7 +2,6 @@
 import styled from 'styled-components';
 
 export const Container = styled.div`
-  min-height: 100vh;
   background: linear-gradient(180deg, #e0f7fa 0%, #f3e8ff 40%, #fff 100%);
   background-attachment: fixed;
   display: flex;

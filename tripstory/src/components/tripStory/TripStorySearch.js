@@ -7,7 +7,6 @@ import StoryCard from "./StoryCard";
 const SearchContainer = styled.div`
   padding: 30px;
   background: #f8fafc;
-  min-height: 100vh;
 `;
 
 const SearchBox = styled.div`

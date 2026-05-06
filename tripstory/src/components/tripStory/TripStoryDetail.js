@@ -12,7 +12,6 @@ const Container = styled.div`
   margin: 0 auto;
   padding: 40px 20px;
   background: #f8fafc;
-  min-height: 100vh;
 `;
 
 const BackButton = styled.button`
