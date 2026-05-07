@@ -24,7 +24,7 @@ export default function Login({ onAuthed }) {
       await reload();
       setUserId('');
       setPw('');
-      nav('/', { replace: true });
+      nav(user?.role === 'admin' ? '/admin' : '/', { replace: true });
     } catch (err) {
       const m = err?.response?.data?.message || '로그인 실패';
       setMsg(m);
