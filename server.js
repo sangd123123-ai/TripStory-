@@ -207,6 +207,19 @@ mongoose
       console.warn('관리자 마이그레이션 실패(무시):', e.message);
     }
 
+    // 벤더 데이터 없으면 자동 시딩
+    try {
+      const Vendor = require('./models/Vendor');
+      const count = await Vendor.countDocuments();
+      if (count === 0) {
+        const { seedVendors } = require('./scripts/seedVendors');
+        await seedVendors(true);
+        console.log('[seed] 벤더 데이터 자동 시딩 완료');
+      }
+    } catch (e) {
+      console.warn('[seed] 벤더 시딩 실패(무시):', e.message);
+    }
+
     app.listen(PORT, () => {
       console.log(`?? Server running at http://localhost:${PORT}`);
     });

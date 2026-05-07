@@ -1,12 +1,11 @@
 // seed/seedVendors.js — Local Market 시드 (실제 주소/URL, 지역별 치환 시드)
 // 실행: node seedVendors.js
-require('dotenv').config();
+require('dotenv').config({ path: require('path').join(__dirname, '../.env') });
 const mongoose = require('mongoose');
 
-// 프로젝트 구조에 맞춰 경로 확인하세요 (예: ./models/Vendor)
-const Vendor = require('./models/Vendor');
+const Vendor = require('../models/Vendor');
 
-const MONGO = process.env.MONGO_URL || 'mongodb://127.0.0.1:27017/tripstory';
+const MONGO = process.env.MONGODB_URI || process.env.MONGO_URL || 'mongodb://127.0.0.1:27017/tripstory';
 
 // 간단 로고 플레이스홀더
 const img = (w, h) => `https://via.placeholder.com/${w}x${h}?text=Local+Market`;
@@ -211,9 +210,11 @@ function isValidVendorAddress(vendor) {
   return !!addr && addr.length >= 6; // 군·구 수준 이상
 }
 
-async function main() {
-  await mongoose.connect(MONGO);
-  console.log('[seed] connected:', MONGO);
+async function seedVendors(externalConnection = false) {
+  if (!externalConnection) {
+    await mongoose.connect(MONGO);
+    console.log('[seed] connected:', MONGO);
+  }
 
   // 1) 유효 데이터 선별
   const valid = vendors.filter(isValidVendorAddress);
@@ -254,11 +255,18 @@ async function main() {
     });
   }
 
-  await mongoose.disconnect();
+  if (!externalConnection) {
+    await mongoose.disconnect();
+  }
   console.log('[seed] done. skipped:', skipped);
 }
 
-main().catch((e) => {
-  console.error('[seed] error', e);
-  mongoose.disconnect().finally(() => process.exit(1));
-});
+module.exports = { seedVendors };
+
+// 직접 실행 시
+if (require.main === module) {
+  seedVendors().catch((e) => {
+    console.error('[seed] error', e);
+    mongoose.disconnect().finally(() => process.exit(1));
+  });
+}
