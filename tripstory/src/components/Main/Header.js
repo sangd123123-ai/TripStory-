@@ -46,14 +46,10 @@ const Header = () => {
 
   if (userLoading || adminLoading) return null;
 
-  // ✅ 이름/아이디 길이 제한
-  const displayNameRaw =
-    user?.nickname ||
-    user?.name ||
-    admin?.name ||
-    user?.userId ||
-    admin?.userId ||
-    "사용자";
+  // ✅ 이름/아이디 길이 제한 — 관리자일 때는 admin 컨텍스트 우선
+  const displayNameRaw = isAdmin
+    ? (admin?.nickname || admin?.name || admin?.userId || "관리자")
+    : (user?.nickname || user?.name || user?.userId || "사용자");
 
   // 12자 이상이면 ... 처리
   const displayName =

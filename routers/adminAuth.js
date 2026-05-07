@@ -74,7 +74,7 @@ router.post('/lgn', async (req, res) => {
       .json({
         accessToken,
         role: user.role,
-        user: { userId: user.userId, name: user.name, role: user.role },
+        user: { userId: user.userId, name: user.name, nickname: user.nickname, role: user.role },
       });
   } catch (e) {
     console.error('[ADMIN LOGIN]', e);
@@ -164,7 +164,7 @@ router.get('/me', async (req, res) => {
 
     const payload = jwt.verify(token, process.env.JWT_ACCESS_SECRET);
     const uid = payload.sub || payload.uid;
-    const user = await User.findById(uid).select('userId name email role').lean();
+    const user = await User.findById(uid).select('userId name nickname email role').lean();
     if (!user) return res.status(404).json({ msg: '사용자 없음' });
 
     // 🔥 여기서도 role 검사
