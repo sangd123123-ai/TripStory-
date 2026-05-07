@@ -4,6 +4,8 @@ import { useEffect, useState, lazy, Suspense } from "react";
 import axios from "axios";
 import { Auth } from "./assets/api/index";
 
+const API_BASE = process.env.REACT_APP_API_URL || '';
+
 // 레이아웃 (항상 필요 → 일반 import 유지)
 import Header from "./components/Main/Header";
 import Footer from "./components/Main/Footer";
@@ -203,8 +205,8 @@ function AppShell() {
   const handleLogout = async () => {
     try {
       await Promise.allSettled([
-        axios.post("/auth/logout", null, { withCredentials: true }),
-        axios.post("/admin-auth/logout", null, { withCredentials: true }),
+        axios.post(`${API_BASE}/auth/logout`, null, { withCredentials: true }),
+        axios.post(`${API_BASE}/admin-auth/logout`, null, { withCredentials: true }),
       ]);
     } catch {
       // 무시해도 됨
