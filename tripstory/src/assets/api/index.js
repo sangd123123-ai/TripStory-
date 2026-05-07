@@ -36,6 +36,9 @@ api.interceptors.response.use(
     }
 
     if (error.response?.status === 401) {
+      if (sessionStorage.getItem('auth_logged_out')) {
+        return Promise.reject(error);
+      }
       try {
         if (!refreshing) {
           // refreshToken은 httpOnly 쿠키라서 withCredentials 필요
@@ -110,6 +113,7 @@ export const Auth = {
       window.localStorage.setItem('accessToken', accessToken);
       api.defaults.headers.Authorization = `Bearer ${accessToken}`;
     }
+    sessionStorage.removeItem('auth_logged_out');
 
     return data?.user || null;
   },
@@ -128,6 +132,7 @@ export const Auth = {
     accessToken = null;
     window.localStorage.removeItem('accessToken');
     delete api.defaults.headers.Authorization;
+    sessionStorage.setItem('auth_logged_out', '1');
   },
 
   /** 앱 부팅 시(새로고침 직후 등) refresh 먼저 시도해서 세션 복구 */
