@@ -15,6 +15,7 @@ const AdminApproval = ({onTripUpdate}) =>{
     const [pendingList, setPendingList] = useState([]);//관리자:승인 대기 여행 목록
     const [showRejectModal, setShowRejectModal] = useState(false);//관리자:거부 사유 입력 모달창
     const [rejectReason, setRejectReason] = useState('');//관리자:입력한 거부 사유
+    const [approving, setApproving] = useState(false);//승인 처리 중 중복 방지
 
     const [showDetailModal,setShowDetailModal] = useState(false)//상세 보기 모달
     const [detailTrip,setDetailTrip] = useState(null)
@@ -72,21 +73,22 @@ const AdminApproval = ({onTripUpdate}) =>{
   // ========== 승인 및 거부 처리 누를 경우 사용자에게도 값 반환! ==========
   // 여행 승인 처리
 const handleApprove = async (trip) => {
+  if (approving) return;
   if (!window.confirm(`'${trip.title}' 여행을 승인하시겠습니까?`)) return;
 
+  setApproving(true);
   try {
-    await approvalService.approveTrip(trip._id)
-    alert('✅ 여행 승인이 완료되었습니다.')//단순 관리자 확인용 알림
-    
-    //상세 모달 닫기
-    setShowDetailModal(false)
-    setDetailTrip(null)
-    //승인 대기 목록 새로고침
-    await fetchPendingList()
-
+    await approvalService.approveTrip(trip._id);
+    // 서버 재조회 없이 로컬 목록에서 바로 제거
+    setPendingList(prev => prev.filter(t => t._id !== trip._id));
+    setShowDetailModal(false);
+    setDetailTrip(null);
+    if (onTripUpdate) onTripUpdate();
   } catch (error) {
     console.error('승인 처리 실패:', error);
     alert('승인 처리에 실패했습니다.');
+  } finally {
+    setApproving(false);
   }
 };
   //거부 모달 열기
@@ -146,7 +148,7 @@ const handleApprove = async (trip) => {
                         {/* 카드 헤더 */}
                         <div className="approval-card-header">
                             <div className="approval-user-info">
-                                👤 {trip.userId}
+                                👤 {trip.userNickname || trip.userId}
                             </div>
                             <div className="approval-date">
                                 {formatDate(trip.createdAt)}
@@ -196,7 +198,7 @@ const handleApprove = async (trip) => {
                         {/* 사용자 정보 */}
                         <div className='approval-detail-user'>
                             <span className='user-icon'>👤</span>
-                            <span className='user-id'>{detailTrip.userId}</span>
+                            <span className='user-id'>{detailTrip.userNickname || detailTrip.userId}</span>
                             <span className='submit-date'>제출일: {formatDate(detailTrip.createdAt)}</span>
                         </div>
 
@@ -249,16 +251,24 @@ const handleApprove = async (trip) => {
 
                         {/* 액션 버튼 */}
                         <div className='approval-detail-actions'>
-                            <button className='btn-approve' onClick={(e) => {
-                                e.stopPropagation()
-                                handleApprove(detailTrip)
-                            }}>
-                                ✅ 승인하기
+                            <button
+                                className='btn-approve'
+                                disabled={approving}
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleApprove(detailTrip);
+                                }}
+                            >
+                                {approving ? '처리 중...' : '✅ 승인하기'}
                             </button>
-                            <button className='btn-reject' onClick={(e)=>{
-                                e.stopPropagation()
-                                openRejectModal(detailTrip)
-                            }}>
+                            <button
+                                className='btn-reject'
+                                disabled={approving}
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    openRejectModal(detailTrip);
+                                }}
+                            >
                                 ❌ 거부하기
                             </button>
                         </div>

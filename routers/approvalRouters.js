@@ -6,6 +6,7 @@ require('../models/mytripSchema')
 
 const approvalTrip = mongoose.model('approvaldbs')
 const mytrip = mongoose.model('mytripdbs')
+const User = mongoose.model('userdbs')
 
 // ✅ authRequired fallback 추가
 const jwt = require('jsonwebtoken');
@@ -86,8 +87,18 @@ router.post('/submit', authRequired, async (req, res) => {
 // 관리자: 승인 대기 목록 조회
 router.get('/pendingList', adminRequired, async (req, res) => {
   try {
-    const pending = await approvalTrip.find({ status: 'pending' }).sort({ createdAt: -1 })
-    res.status(200).send(pending)
+    const pending = await approvalTrip.find({ status: 'pending' }).sort({ createdAt: -1 }).lean()
+
+    // userId(ObjectId 문자열)로 닉네임 일괄 조회
+    const userIds = [...new Set(pending.map(t => t.userId))]
+    const users = await User.find({ _id: { $in: userIds } }).select('nickname name userId').lean()
+    const userMap = {}
+    users.forEach(u => {
+      userMap[String(u._id)] = u.nickname || u.name || u.userId
+    })
+
+    const result = pending.map(t => ({ ...t, userNickname: userMap[t.userId] || t.userId }))
+    res.status(200).send(result)
   } catch (err) {
     console.error('승인 대기 목록 조회 실패:', err)
     res.status(500).send({ error: true, message: '조회 실패' })
@@ -97,11 +108,12 @@ router.get('/pendingList', adminRequired, async (req, res) => {
 // 관리자: 승인 처리
 router.post('/approve/:id', adminRequired, async (req, res) => {
   try {
-    const trip = await approvalTrip.findById(req.params.id);
-    if (!trip) return res.status(404).json({ error: '승인 요청을 찾을 수 없습니다.' });
-
-    trip.status = 'approved';
-    await trip.save();
+    const trip = await approvalTrip.findOneAndUpdate(
+      { _id: req.params.id, status: 'pending' },
+      { status: 'approved' },
+      { new: true }
+    );
+    if (!trip) return res.status(404).json({ error: '승인 요청을 찾을 수 없거나 이미 처리되었습니다.' });
 
     res.json({ success: true, message: '관리자 승인 완료 (사용자 확인 대기 중)' });
   } catch (err) {
