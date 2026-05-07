@@ -48,7 +48,7 @@ const Header = () => {
 
   // ✅ 이름/아이디 길이 제한 — 관리자일 때는 admin 컨텍스트 우선
   const displayNameRaw = isAdmin
-    ? (admin?.nickname || admin?.name || admin?.userId || "관리자")
+    ? (admin?.nickname || admin?.name || "관리자")
     : (user?.nickname || user?.name || user?.userId || "사용자");
 
   // 12자 이상이면 ... 처리
