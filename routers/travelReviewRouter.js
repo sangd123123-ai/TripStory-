@@ -31,6 +31,7 @@ router.get('/', async (req, res) => {
         .sort({ createdAt: -1 })
         .skip((pg - 1) * sz)
         .limit(sz)
+        .select('title type hashtags coverUrl images authorName likeCount commentCount viewCount createdAt')
         .lean(),
       TravelReview.countDocuments(q),
     ]);
