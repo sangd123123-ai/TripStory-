@@ -1,5 +1,6 @@
 // scripts/fetchKakaoImages.js
-// Kakao Local API로 장소 썸네일 이미지 가져와서 DB 업데이트
+// 카카오 이미지 검색 API로 장소 사진 가져와서 DB 업데이트
+// 실행 전: Kakao Developers 콘솔에서 "다음 검색(DAUM_SEARCH)" 서비스 활성화 필요
 require('dotenv').config();
 const mongoose = require('mongoose');
 const axios = require('axios');
@@ -13,22 +14,20 @@ if (!KAKAO_REST_KEY) {
   process.exit(1);
 }
 
-async function fetchThumbnail(name, x, y) {
+async function fetchImageUrl(name, region) {
   try {
-    const params = { query: name, size: 1 };
-    if (x && y) {
-      params.x = x;
-      params.y = y;
-      params.radius = 500;
-      params.sort = 'distance';
-    }
-    const res = await axios.get('https://dapi.kakao.com/v2/local/search/keyword.json', {
+    const query = `${region} ${name}`;
+    const res = await axios.get('https://dapi.kakao.com/v2/search/image', {
       headers: { Authorization: `KakaoAK ${KAKAO_REST_KEY}` },
-      params,
+      params: { query, size: 1, sort: 'accuracy' },
     });
-    const place = res.data?.documents?.[0];
-    return place?.thumbnail_image_url || place?.place_url || '';
+    const doc = res.data?.documents?.[0];
+    return doc?.thumbnail_url || doc?.image_url || '';
   } catch (e) {
+    if (e.response?.status === 401 || e.response?.status === 403) {
+      console.error('❌ 인증 오류 - Kakao 개발자 콘솔에서 "다음 검색(DAUM_SEARCH)" 서비스를 활성화하세요.');
+      process.exit(1);
+    }
     return '';
   }
 }
@@ -49,7 +48,7 @@ function sleep(ms) {
 
   for (let i = 0; i < places.length; i++) {
     const p = places[i];
-    const imageUrl = await fetchThumbnail(p.name, p.x, p.y);
+    const imageUrl = await fetchImageUrl(p.name, p.region);
 
     if (imageUrl) {
       await Trip.updateOne({ _id: p._id }, { $set: { image_url: imageUrl } });
