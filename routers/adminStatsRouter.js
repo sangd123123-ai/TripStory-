@@ -41,18 +41,34 @@ router.get('/today-visitors', async (_req, res) => {
   }
 });
 
-// 최근 7일(일자별) 방문자 수
+// 최근 7일(일자별) 방문자 수 — aggregation 1회 쿼리
 router.get('/last7days', async (_req, res) => {
   try {
+    const { start: rangeStart } = getKSTDayRange(new Date(Date.now() - 6 * 24 * 60 * 60 * 1000));
+    const { end: rangeEnd }   = getKSTDayRange(new Date());
+
+    const agg = await User.aggregate([
+      { $match: { lastLogin: { $gte: rangeStart, $lt: rangeEnd }, isBlocked: { $ne: true } } },
+      { $group: {
+          _id: {
+            $dateToString: {
+              format: '%Y-%m-%d',
+              date: { $dateAdd: { startDate: '$lastLogin', unit: 'hour', amount: 9 } },
+            },
+          },
+          count: { $sum: 1 },
+      }},
+      { $sort: { _id: 1 } },
+    ]);
+
+    // 7일치 날짜 슬롯 생성 후 집계 결과 매핑
+    const countMap = Object.fromEntries(agg.map(x => [x._id, x.count]));
     const results = [];
     for (let i = 6; i >= 0; i--) {
-      const base = new Date(Date.now() - i * 24 * 60 * 60 * 1000);
-      const { start, end } = getKSTDayRange(base);
-      const count = await User.countDocuments({
-        lastLogin: { $gte: start, $lt: end },
-        isBlocked: { $ne: true },
-      });
-      results.push({ dateStart: start, dateEnd: end, count });
+      const { start, end } = getKSTDayRange(new Date(Date.now() - i * 24 * 60 * 60 * 1000));
+      const kst = new Date(start.getTime() + 9 * 60 * 60 * 1000);
+      const key = kst.toISOString().slice(0, 10);
+      results.push({ dateStart: start, dateEnd: end, count: countMap[key] ?? 0 });
     }
     res.json({ items: results });
   } catch (err) {

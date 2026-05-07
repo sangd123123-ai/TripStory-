@@ -28,28 +28,21 @@ export default function AdminHome() {
 
     async function loadStatsAndRender() {
       try {
-        // 1) 오늘 방문자
-        const today = await adminStatsService.getTodayVisitors();
+        // 5개 API 병렬 호출
+        const [today, last7, stampStats, totalUsersRes, masterCountRes] =
+          await Promise.all([
+            adminStatsService.getTodayVisitors().catch(() => null),
+            adminStatsService.getLast7Days().catch(() => null),
+            adminStatsService.getStampStats().catch(() => ({})),
+            adminStatsService.getTotalUsers().catch(() => null),
+            adminStatsService.getMasterCount().catch(() => null),
+          ]);
+
         if (!isMounted) return;
+
         setTodayVisitors(today?.count ?? 0);
-
-        // 1-1) 전체 회원 수
-        try {
-          const { count } = await adminStatsService.getTotalUsers();
-          if (!isMounted) return;
-          setTotalUsers(count ?? 0);
-        } catch {}
-
-        // 1-2) 마스터 등급 수
-        try {
-          const { count } = await adminStatsService.getMasterCount();
-          if (!isMounted) return;
-          setMasterCount(count ?? 0);
-        } catch {}
-
-        // 2) 최근 7일
-        const last7 = await adminStatsService.getLast7Days();
-        if (!isMounted) return;
+        setTotalUsers(totalUsersRes?.count ?? 0);
+        setMasterCount(masterCountRes?.count ?? 0);
 
         const items = Array.isArray(last7?.items) ? last7.items : [];
         const labels = build7DayLabels(items);
@@ -87,7 +80,6 @@ export default function AdminHome() {
         });
 
         // 2-2) 스탬프 등급 분포 — 실제값 연동
-        const stampStats = await adminStatsService.getStampStats();
         const labelsStamp = Object.keys(stampStats);
         const dataStamp = Object.values(stampStats);
 

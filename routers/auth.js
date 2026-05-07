@@ -128,6 +128,9 @@ router.post('/login', async (req, res) => {
     const at = signAccessToken(u);
     const rt = signRefreshToken(u);
 
+    // lastLogin 업데이트 (방문자 집계용)
+    await User.findByIdAndUpdate(u._id, { lastLogin: new Date() });
+
     // refresh cookie 저장
     res.cookie('rt', rt, refreshCookieOpts);
     res.json({ accessToken: at, user: u.toSafeJSON ? u.toSafeJSON() : {
