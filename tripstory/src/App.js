@@ -267,7 +267,7 @@ function AppShell() {
           <Route path="/" element={<Main user={user} />} />
 
           {/* 일반 로그인 / 회원가입 */}
-          <Route path="/login" element={<Login onAuthed={setUser} />} />
+          <Route path="/login" element={<Login onAuthed={(u) => { setUser(u); if (u?.role === 'admin') setAdmin(u); }} />} />
           <Route path="/join" element={<Register />} />
 
           {/* 관리자 로그인 */}
