@@ -158,18 +158,12 @@ function AppShell() {
         ) {
           currentAdmin = currentUser;
         } else {
-          // 별도의 admin-auth 세션 있는지 확인
+          // 별도의 admin-auth 세션 있는지 확인 (이미 저장된 토큰만 사용, 자동 재발급 없음)
           try {
             const { AdminAuth } = await import("./admin/AdminApi");
             currentAdmin = await AdminAuth.me();
           } catch {
-            await tryAdminRefreshFallback();
-            try {
-              const { AdminAuth } = await import("./admin/AdminApi");
-              currentAdmin = await AdminAuth.me();
-            } catch {
-              currentAdmin = null;
-            }
+            currentAdmin = null;
           }
         }
 
