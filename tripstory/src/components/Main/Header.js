@@ -38,9 +38,7 @@ const Header = () => {
       await Promise.allSettled([AdminApi.logout(), Auth.logout()]);
       try { localStorage.removeItem("adminAccess"); } catch {}
       try { localStorage.removeItem("accessToken"); } catch {}
-      await Promise.allSettled([userReload?.(), adminReload?.()]);
       window.location.replace("/");
-      setTimeout(() => window.location.reload(), 0);
     } finally {
       setLoggingOut(false);
     }
