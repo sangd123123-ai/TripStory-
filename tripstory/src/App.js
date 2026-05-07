@@ -297,6 +297,14 @@ function AppShell() {
             }
           />
           <Route
+            path="/tripstory/write"
+            element={
+              <RequireAuth user={user} admin={admin}>
+                <TripStoryWrite user={user || admin} />
+              </RequireAuth>
+            }
+          />
+          <Route
             path="/tripstory/:id"
             element={
               <RequireAuth user={user} admin={admin}>
