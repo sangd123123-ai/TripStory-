@@ -3,13 +3,11 @@ import { Routes, Route, Navigate, useLocation, useNavigate } from "react-router-
 import { useEffect, useState, lazy, Suspense } from "react";
 import axios from "axios";
 import { Auth } from "./assets/api/index";
-
-const API_BASE = process.env.REACT_APP_API_URL || '';
-
-// 레이아웃 (항상 필요 → 일반 import 유지)
 import Header from "./components/Main/Header";
 import Footer from "./components/Main/Footer";
 import { GlobalStyle } from "./components/Main/MainStyled";
+
+const API_BASE = process.env.REACT_APP_API_URL || '';
 
 // 페이지 컴포넌트 (lazy load)
 const Main           = lazy(() => import("./components/Main/Main"));
