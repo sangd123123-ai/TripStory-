@@ -280,6 +280,8 @@ const CutsMessage = styled.p`
 // 🎨 ImageGenerateModal Component
 // ===================================
 
+const API_BASE = process.env.REACT_APP_API_URL || '';
+
 function ImageGenerateModal({ tripData, onClose, user }) {
   const navigate = useNavigate();
   const [form, setForm] = useState({
@@ -318,7 +320,7 @@ function ImageGenerateModal({ tripData, onClose, user }) {
       };
 
       // 미리보기 API 엔드포인트 사용
-      const apiUrl = `/api/tripstory/ai/preview-webtoon-from-mytrip/${tripData._id}`;
+      const apiUrl = `${API_BASE}/api/tripstory/ai/preview-webtoon-from-mytrip/${tripData._id}`;
       const token = localStorage.getItem('token') || localStorage.getItem('accessToken');
       
       const response = await fetch(apiUrl, {
@@ -362,7 +364,7 @@ function ImageGenerateModal({ tripData, onClose, user }) {
     try {
       const token = localStorage.getItem('token') || localStorage.getItem('accessToken');
       
-      const response = await fetch('/api/tripstory', {
+      const response = await fetch(`${API_BASE}/api/tripstory`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
