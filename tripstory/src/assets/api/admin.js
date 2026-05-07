@@ -26,9 +26,9 @@ const admin = axios.create({
   timeout: 15000,
 });
 
-// --- 요청 인터셉터: Authorization 헤더에 adminAccess 붙이기 ---
+// --- 요청 인터셉터: Authorization 헤더에 adminAccess 붙이기 (없으면 일반 토큰 폴백) ---
 admin.interceptors.request.use((cfg) => {
-  const tk = getToken();
+  const tk = getToken() || localStorage.getItem('accessToken');
   if (tk) cfg.headers.Authorization = `Bearer ${tk}`;
   return cfg;
 });
