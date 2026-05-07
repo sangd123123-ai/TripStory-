@@ -47,6 +47,9 @@ admin.interceptors.response.use(
     if (status !== 401 || cfg.__retry) return Promise.reject(err);
     cfg.__retry = true;
 
+    // 명시적 로그아웃 직후엔 자동 리프레시 금지
+    if (sessionStorage.getItem('auth_logged_out')) return Promise.reject(err);
+
     if (!isRefreshing) {
       // 내가 첫 401이야 -> refresh 시작
       isRefreshing = true;
@@ -104,6 +107,7 @@ const AdminApi = {
       await admin.post('/admin-auth/logout');
     } finally {
       setToken(null);
+      sessionStorage.setItem('auth_logged_out', '1');
     }
   },
 
