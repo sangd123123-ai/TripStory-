@@ -2,7 +2,7 @@
 require('dotenv').config();
 const mongoose = require('mongoose');
 const fs = require('fs');
-const Trip = require('./models/tripSchema');
+const Trip = require('../models/tripSchema');
 
 mongoose.connect(process.env.MONGODB_URI, {
   useNewUrlParser: true,
@@ -11,7 +11,7 @@ mongoose.connect(process.env.MONGODB_URI, {
 .then(() => console.log('✅ MongoDB 연결 성공'))
 .catch((err) => console.error('❌ MongoDB 연결 실패:', err));
 
-const rawData = fs.readFileSync('./popularPlaces_kakao.json', 'utf-8');
+const rawData = require('fs').readFileSync(require('path').join(__dirname, '../popularPlaces_kakao.json'), 'utf-8');
 const jsonData = JSON.parse(rawData);
 
 const tripData = [];

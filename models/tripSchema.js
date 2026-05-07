@@ -12,7 +12,7 @@ const tripSchema = new mongoose.Schema({
   x: { type: String, default: '' },             // 경도 (longitude)
   y: { type: String, default: '' },             // 위도 (latitude)
   region: { type: String, required: true },     // 지역명 (부산, 여수 등)
-  image_url: { type: String, required: true }, // 나중에 이미지 추가용
+  image_url: { type: String, default: '' },
   description: { type: String, required: false }, // 나중에 공공데이터용
   source: { type: String, default: 'Kakao' },   // 데이터 출처
   created_at: { type: Date, default: Date.now },
