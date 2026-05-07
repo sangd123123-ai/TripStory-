@@ -189,8 +189,24 @@ const MONGODB_URI = process.env.MONGODB_URI;
 
 mongoose
   .connect(MONGODB_URI)
-  .then(() => {
+  .then(async () => {
     console.log('??MongoDB connected (localhost:27017)');
+
+    // 관리자 name/nickname 깨진 문자 복구 (1회성 마이그레이션)
+    try {
+      const User = mongoose.model('userdbs');
+      const result = await User.updateMany(
+        { role: 'admin' },
+        [{ $set: {
+          name: { $cond: [{ $or: [{ $eq: ['$name', ''] }, { $eq: ['$name', null] }, { $not: [{ $regexMatch: { input: { $ifNull: ['$name', ''] }, regex: /^[\x20-\x7E가-힣ᄀ-ᇿ㄰-㆏]+$/ } }] }] }, '관리자', '$name'] },
+          nickname: { $cond: [{ $or: [{ $eq: ['$nickname', ''] }, { $eq: ['$nickname', null] }, { $not: [{ $regexMatch: { input: { $ifNull: ['$nickname', ''] }, regex: /^[\x20-\x7E가-힣ᄀ-ᇿ㄰-㆏]+$/ } }] }] }, '관리자', '$nickname'] },
+        }}]
+      );
+      if (result.modifiedCount > 0) console.log(`관리자 name/nickname 복구: ${result.modifiedCount}건`);
+    } catch (e) {
+      console.warn('관리자 마이그레이션 실패(무시):', e.message);
+    }
+
     app.listen(PORT, () => {
       console.log(`?? Server running at http://localhost:${PORT}`);
     });
