@@ -29,7 +29,7 @@ const REFRESH_TTL_SEC = 60 * 60 * 24;  // 24시간
 
 // ===== JWT 유틸 =====
 function signAccessToken(user) {
-  return jwt.sign({ uid: String(user._id) }, process.env.JWT_ACCESS_SECRET, { expiresIn: ACCESS_TTL_SEC });
+  return jwt.sign({ uid: String(user._id), role: user.role || 'user' }, process.env.JWT_ACCESS_SECRET, { expiresIn: ACCESS_TTL_SEC });
 }
 function signRefreshToken(user) {
   return jwt.sign({ uid: String(user._id), typ: 'refresh' }, process.env.JWT_REFRESH_SECRET, { expiresIn: REFRESH_TTL_SEC });
