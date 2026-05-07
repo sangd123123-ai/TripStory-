@@ -53,7 +53,7 @@ async function ensureAccessToken(contextUser) {
 
   // 일반 유저 refresh
   try {
-    const r = await axios.post("/auth/refresh", {}, { withCredentials: true });
+    const r = await axios.post(`${API_BASE}/auth/refresh`, {}, { withCredentials: true });
     const t = r?.data?.accessToken || r?.data?.token;
     if (t) {
       localStorage.setItem("accessToken", t);
@@ -65,7 +65,7 @@ async function ensureAccessToken(contextUser) {
 
   // 관리자 refresh
   try {
-    const r2 = await axios.post("/admin-auth/refresh", {}, { withCredentials: true });
+    const r2 = await axios.post(`${API_BASE}/admin-auth/refresh`, {}, { withCredentials: true });
     const t2 = r2?.data?.accessToken || r2?.data?.token || r2?.data?.adminAccessToken;
     if (t2) {
       localStorage.setItem("accessToken", t2);
@@ -95,7 +95,7 @@ async function withAuth(doRequest, contextUser) {
 // 내 로그인 정보 (일반 → 실패하면 관리자)
 async function fetchMeEither() {
   try {
-    const r = await fetch("/auth/me", { credentials: "include" });
+    const r = await fetch(`${API_BASE}/auth/me`, { credentials: "include" });
     if (r.ok) {
       const j = await r.json();
       return j?.user ?? j;
@@ -105,7 +105,7 @@ async function fetchMeEither() {
   }
 
   try {
-    const r2 = await fetch("/admin-auth/me", { credentials: "include" });
+    const r2 = await fetch(`${API_BASE}/admin-auth/me`, { credentials: "include" });
     if (r2.ok) {
       const j2 = await r2.json();
       return j2?.user ?? j2;
@@ -119,7 +119,7 @@ async function fetchMeEither() {
 
 // 공지 상세 불러오기
 async function fetchDetail(id) {
-  const r = await fetch(`/notices/${id}`, { credentials: "include" });
+  const r = await fetch(`${API_BASE}/notices/${id}`, { credentials: "include" });
   const j = await r.json();
   // 어떤 서버는 { ok:true, notice:{...} } 형태, 어떤 서버는 바로 notice 객체만 줌
   if (j && j.ok && j.notice) {
@@ -234,7 +234,7 @@ export default function NoticeModalPost({ openId, onClose }) {
       const r = await withAuth(
         (tok) =>
           axios.post(
-            `/notices/${detail._id}/like`,
+            `${API_BASE}/notices/${detail._id}/like`,
             {},
             { withCredentials: true, headers: authHeader(tok) }
           ),
@@ -276,7 +276,7 @@ export default function NoticeModalPost({ openId, onClose }) {
       const r = await withAuth(
         (tok) =>
           axios.post(
-            `/notices/${detail._id}/comments`,
+            `${API_BASE}/notices/${detail._id}/comments`,
             { content: val },
             { withCredentials: true, headers: authHeader(tok) }
           ),
