@@ -9,6 +9,9 @@ import { GlobalStyle } from "./components/Main/MainStyled";
 
 const API_BASE = process.env.REACT_APP_API_URL || '';
 
+// 앱 로드 시 방문자 집계 (쿠키로 중복 방지)
+axios.post(`${API_BASE}/api/visit`, {}, { withCredentials: true }).catch(() => {});
+
 // 페이지 컴포넌트 (lazy load)
 const Main           = lazy(() => import("./components/Main/Main"));
 const Login          = lazy(() => import("./components/Main/Login"));

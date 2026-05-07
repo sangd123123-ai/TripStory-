@@ -156,7 +156,8 @@ mountAuto("/stamp", "./routers/stampRouters");
 mountAuto("/mytrip", "./routers/mytripRouters");
 mountAuto('/api/coupons', './routers/couponRouter');
 mountAuto('/api/market', './routers/marketRouter');
-mountAuto('/api/tripstory', './routers/tripStoryRouter'); 
+mountAuto('/api/tripstory', './routers/tripStoryRouter');
+mountAuto('/api/visit',    './routers/visitRouter');
 
 try {
   const noticeRouter = require('./routers/noticeRouter');

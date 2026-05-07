@@ -2,11 +2,13 @@
 const express = require('express');
 const mongoose = require('mongoose');
 
-require('../models/userSchema');   // 안전하게 보장
-require('../models/stampSchema');  // 도넛차트 집계용 (userId, location, date) :contentReference[oaicite:4]{index=4}
+require('../models/userSchema');
+require('../models/stampSchema');
+require('../models/visitorLogSchema');
 
-const User  = mongoose.model('userdbs');
-const Stamp = mongoose.model('stampdbs');
+const User       = mongoose.model('userdbs');
+const Stamp      = mongoose.model('stampdbs');
+const VisitorLog = mongoose.model('visitorlogs');
 
 const router = express.Router();
 
@@ -26,50 +28,41 @@ function getKSTDayRange(date = new Date()) {
 
 /** ⬇️⬇️⬇️ 기존 기능: 그대로 유지 ⬇️⬇️⬇️ **/
 
-// 오늘 방문자 수(마지막 접속일이 '오늘'인 유저)
+// 오늘 방문자 수 — visitorLog 기반 (비로그인 포함)
 router.get('/today-visitors', async (_req, res) => {
   try {
-    const { start, end } = getKSTDayRange(new Date());
-    const count = await User.countDocuments({
-      lastLogin: { $gte: start, $lt: end },
-      isBlocked: { $ne: true },
-    });
-    res.json({ count, range: { start, end } });
+    const kst = new Date(Date.now() + 9 * 60 * 60 * 1000);
+    const today = kst.toISOString().slice(0, 10);
+    const count = await VisitorLog.countDocuments({ date: today });
+    res.json({ count });
   } catch (err) {
     console.error('[admin-stats] today-visitors', err);
     res.status(500).json({ error: 'INTERNAL_ERROR' });
   }
 });
 
-// 최근 7일(일자별) 방문자 수 — aggregation 1회 쿼리
+// 최근 7일(일자별) 방문자 수 — visitorLog 기반 (비로그인 포함)
 router.get('/last7days', async (_req, res) => {
   try {
-    const { start: rangeStart } = getKSTDayRange(new Date(Date.now() - 6 * 24 * 60 * 60 * 1000));
-    const { end: rangeEnd }   = getKSTDayRange(new Date());
+    // 7일치 날짜 문자열 생성 (KST)
+    const dates = [];
+    for (let i = 6; i >= 0; i--) {
+      const kst = new Date(Date.now() - i * 24 * 60 * 60 * 1000 + 9 * 60 * 60 * 1000);
+      dates.push(kst.toISOString().slice(0, 10));
+    }
 
-    const agg = await User.aggregate([
-      { $match: { lastLogin: { $gte: rangeStart, $lt: rangeEnd }, isBlocked: { $ne: true } } },
-      { $group: {
-          _id: {
-            $dateToString: {
-              format: '%Y-%m-%d',
-              date: { $dateAdd: { startDate: '$lastLogin', unit: 'hour', amount: 9 } },
-            },
-          },
-          count: { $sum: 1 },
-      }},
-      { $sort: { _id: 1 } },
+    const agg = await VisitorLog.aggregate([
+      { $match: { date: { $in: dates } } },
+      { $group: { _id: '$date', count: { $sum: 1 } } },
     ]);
 
-    // 7일치 날짜 슬롯 생성 후 집계 결과 매핑
     const countMap = Object.fromEntries(agg.map(x => [x._id, x.count]));
-    const results = [];
-    for (let i = 6; i >= 0; i--) {
-      const { start, end } = getKSTDayRange(new Date(Date.now() - i * 24 * 60 * 60 * 1000));
-      const kst = new Date(start.getTime() + 9 * 60 * 60 * 1000);
-      const key = kst.toISOString().slice(0, 10);
-      results.push({ dateStart: start, dateEnd: end, count: countMap[key] ?? 0 });
-    }
+    const results = dates.map(date => ({
+      dateStart: new Date(date + 'T00:00:00+09:00'),
+      dateEnd:   new Date(date + 'T23:59:59+09:00'),
+      count: countMap[date] ?? 0,
+    }));
+
     res.json({ items: results });
   } catch (err) {
     console.error('[admin-stats] last7days', err);
