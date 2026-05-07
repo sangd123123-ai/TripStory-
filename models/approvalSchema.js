@@ -12,11 +12,14 @@ const approvalSchema = new mongoose.Schema({
     proofImage:{type:String,required:true},//증빙자료 이미지 url
     
     // 승인 데이터
-    status:{type:String,enum:['pending','approved','rejected','completed'],default:'pending'},    rejectionReason:{type:String,default:''},//거부 사유
-    createdAt:{type:Date,default:Date.now},
+    status:{type:String,enum:['pending','approved','rejected','completed'],default:'pending', index:true},    rejectionReason:{type:String,default:''},//거부 사유
+    createdAt:{type:Date,default:Date.now, index:true},
     reviewedAt:{type:Date},//검토 완료 시간
     reviewedBy:{type:String}//검토한 관리자 Id
 })
+
+// status + createdAt 복합 인덱스 — pendingList 쿼리 최적화
+approvalSchema.index({ status: 1, createdAt: -1 });
 
 console.log('승인 대기 스키마 정의')
 
