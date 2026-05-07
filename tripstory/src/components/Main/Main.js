@@ -208,54 +208,46 @@ export default function Main() {
         const { data } = await axios.get(`${API_BASE}/api/weather-course`, {
           params: { limit: 4, region },
           withCredentials: true,
-          timeout: 4000,
+          timeout: 10000,
         });
         if (!alive) return;
         const list = data?.list || [];
         setWeatherCourses(list.slice(0, 4));
+
+        // KMA 날씨 데이터 우선 사용
+        if (data?.weatherSummary?.sky && data.weatherSummary.temp != null) {
+          const { sky, temp } = data.weatherSummary;
+          setWeatherSummary({ sky, temp, msg: `${sky} / ${temp}℃` });
+          return;
+        }
       } catch (err) {
         if (!alive) return;
         console.error("[weather-course] list fallback:", err?.message || err);
         setWeatherCourses([]);
       }
-    };
 
-    const fetchOpenWeather = async () => {
+      // KMA 실패 시 OpenWeatherMap 폴백
+      if (!process.env.REACT_APP_WEATHER_API_KEY) {
+        if (alive) setWeatherSummary({ sky: "정보 없음", temp: null, msg: "날씨 정보를 불러올 수 없어요" });
+        return;
+      }
       try {
         const coord = REGION_TO_COORDS[region] || REGION_TO_COORDS.seoul;
-        if (!process.env.REACT_APP_WEATHER_API_KEY) {
-          if (!alive) return;
-          setWeatherSummary({ sky: "정보 없음", temp: null, msg: "정보 없음 / 온도 없음" });
-          return;
-        }
         const ow = await axios.get(OPENWEATHER_URL, {
-          params: {
-            lat: coord.lat,
-            lon: coord.lon,
-            units: "metric",
-            lang: "en",
-            appid: process.env.REACT_APP_WEATHER_API_KEY,
-          },
+          params: { lat: coord.lat, lon: coord.lon, units: "metric", lang: "en", appid: process.env.REACT_APP_WEATHER_API_KEY },
           timeout: 5000,
         });
         if (!alive) return;
         const temp = Math.round(Number(ow.data?.main?.temp) * 10) / 10;
         const desc = (ow.data?.weather?.[0]?.description || "").toLowerCase();
         const sky = skyMap[desc] || "정보 없음";
-        setWeatherSummary({
-          sky,
-          temp: Number.isFinite(temp) ? temp : null,
-          msg: Number.isFinite(temp) ? `${sky} / ${temp}℃` : `${sky} / 온도 없음`,
-        });
+        setWeatherSummary({ sky, temp: Number.isFinite(temp) ? temp : null, msg: Number.isFinite(temp) ? `${sky} / ${temp}℃` : sky });
       } catch (err) {
-        if (!alive) return;
-        console.error("[openweather] error:", err?.message || err);
-        setWeatherSummary({ sky: "정보 없음", temp: null, msg: "정보 없음 / 온도 없음" });
+        if (alive) setWeatherSummary({ sky: "정보 없음", temp: null, msg: "날씨 정보를 불러올 수 없어요" });
       }
     };
 
     fetchCourses();
-    fetchOpenWeather();
 
     return () => { alive = false; };
   }, [region]);
