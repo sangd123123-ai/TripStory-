@@ -207,17 +207,13 @@ mongoose
       console.warn('관리자 마이그레이션 실패(무시):', e.message);
     }
 
-    // 벤더 데이터 없으면 자동 시딩
+    // 벤더 샘플 데이터 전체 삭제 (1회성)
     try {
       const Vendor = require('./models/Vendor');
-      const count = await Vendor.countDocuments();
-      if (count === 0) {
-        const { seedVendors } = require('./scripts/seedVendors');
-        await seedVendors(true);
-        console.log('[seed] 벤더 데이터 자동 시딩 완료');
-      }
+      const result = await Vendor.deleteMany({});
+      if (result.deletedCount > 0) console.log(`[market] 벤더 샘플 데이터 ${result.deletedCount}건 삭제`);
     } catch (e) {
-      console.warn('[seed] 벤더 시딩 실패(무시):', e.message);
+      console.warn('[market] 벤더 삭제 실패(무시):', e.message);
     }
 
     app.listen(PORT, () => {
