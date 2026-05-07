@@ -19,23 +19,23 @@ import TripRouteMapNaver from "../root/TripRouteMapNaver"; // ✅ 추가
 
 const getCategoryImage = (category) => {
   const categoryImages = {
-    food: "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=400&q=80",
+    food: "https://images.unsplash.com/photo-1498654896293-37aacf113fd9?w=400&q=80",
     cafe: "https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?w=400&q=80",
-    stay: "https://images.unsplash.com/photo-1566073771259-6a8506099945?w=400&q=80",
+    stay: "https://images.unsplash.com/photo-1611892440504-42a792e24d32?w=400&q=80",
     nature: "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=400&q=80",
-    mountain: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&q=80",
+    mountain: "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=400&q=80",
     beach: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=400&q=80",
-    tour: "https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=400&q=80",
-    default: "https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=400&q=80",
+    tour: "https://images.unsplash.com/photo-1538485399081-7191377e8241?w=400&q=80",
+    default: "https://images.unsplash.com/photo-1534294668821-28a3054f4256?w=400&q=80",
   };
   if (!category) return categoryImages.default;
   const lower = category.toLowerCase();
-  if (lower.includes("맛집") || lower.includes("음식")) return categoryImages.food;
-  if (lower.includes("카페")) return categoryImages.cafe;
-  if (lower.includes("숙박") || lower.includes("호텔")) return categoryImages.stay;
-  if (lower.includes("산") || lower.includes("등산")) return categoryImages.mountain;
-  if (lower.includes("바다") || lower.includes("해변")) return categoryImages.beach;
-  if (lower.includes("관광")) return categoryImages.tour;
+  if (lower === "food" || lower.includes("맛집") || lower.includes("음식") || lower.includes("식당") || lower.includes("분식")) return categoryImages.food;
+  if (lower === "stay" || lower.includes("숙박") || lower.includes("호텔") || lower.includes("펜션") || lower.includes("게스트하우스")) return categoryImages.stay;
+  if (lower === "tour" || lower.includes("관광") || lower.includes("명소") || lower.includes("여행지")) return categoryImages.tour;
+  if (lower.includes("카페") || lower.includes("디저트")) return categoryImages.cafe;
+  if (lower.includes("산") || lower.includes("등산") || lower.includes("트레킹")) return categoryImages.mountain;
+  if (lower.includes("바다") || lower.includes("해변") || lower.includes("해수욕")) return categoryImages.beach;
   return categoryImages.default;
 };
 
