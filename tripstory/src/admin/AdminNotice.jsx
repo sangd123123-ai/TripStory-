@@ -3,6 +3,16 @@ import React, { useEffect, useMemo, useState } from "react";
 import AdminApi from "./AdminApi"; // default export
 const api = AdminApi;
 
+function useIsMobile() {
+  const [v, setV] = useState(window.innerWidth <= 768);
+  useEffect(() => {
+    const fn = () => setV(window.innerWidth <= 768);
+    window.addEventListener("resize", fn);
+    return () => window.removeEventListener("resize", fn);
+  }, []);
+  return v;
+}
+
 // ---- 엔드포인트 래퍼 ----
 const listNotices = (params) => api.get("/admin/notices", { params });
 const createNotice = (body, cfg) => api.post("/admin/notices", body, cfg);
@@ -10,6 +20,8 @@ const patchNotice  = (id, body, cfg) => api.patch(`/admin/notices/${id}`, body, 
 const deleteNotice = (id) => api.delete(`/admin/notices/${id}`);
 
 export default function AdminNotice() {
+  const isMobile = useIsMobile();
+
   // 리스트
   const [q, setQ] = useState("");
   const [page, setPage] = useState(1);
@@ -174,7 +186,7 @@ export default function AdminNotice() {
     <div
       style={{
         display: "grid",
-        gridTemplateColumns: "2fr 1fr",
+        gridTemplateColumns: isMobile ? "1fr" : "2fr 1fr",
         gap: 16,
       }}
     >
@@ -182,12 +194,12 @@ export default function AdminNotice() {
           좌측: 공지 목록 테이블
          ───────────────────────── */}
       <section style={card}>
-        <div style={listHead}>
+        <div style={{ ...listHead, flexWrap: "wrap", gap: 8 }}>
           <div>
             <strong>전체 공지</strong>
             <span style={muted}> {total}개</span>
           </div>
-          <div>
+          <div style={{ flex: 1, minWidth: 160 }}>
             <input
               placeholder="제목 검색"
               value={q}
@@ -195,7 +207,7 @@ export default function AdminNotice() {
                 setQ(e.target.value);
                 setPage(1);
               }}
-              style={input}
+              style={{ ...input, width: "100%", boxSizing: "border-box" }}
             />
           </div>
         </div>
@@ -331,9 +343,7 @@ export default function AdminNotice() {
       <section
         style={{
           ...card,
-          position: "sticky",
-          top: 16,
-          alignSelf: "start",
+          ...(isMobile ? {} : { position: "sticky", top: 16, alignSelf: "start" }),
           padding: 18,
         }}
       >
@@ -629,7 +639,8 @@ const input = {
 const tableWrap = {
   border: "1px solid #eef2f7",
   borderRadius: 12,
-  overflow: "hidden",
+  overflowX: "auto",
+  WebkitOverflowScrolling: "touch",
 };
 const th = {
   padding: ".75rem",

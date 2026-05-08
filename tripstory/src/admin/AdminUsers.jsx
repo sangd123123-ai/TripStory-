@@ -96,6 +96,13 @@ export default function AdminUsers() {
   const [q, setQ] = useState("");
   const [role, setRole] = useState("");
   const [status, setStatus] = useState("");
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+
+  useEffect(() => {
+    const onResize = () => setIsMobile(window.innerWidth <= 768);
+    window.addEventListener("resize", onResize);
+    return () => window.removeEventListener("resize", onResize);
+  }, []);
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -250,13 +257,13 @@ export default function AdminUsers() {
       style={{
         display: "grid",
         gap: 16,
-        width: "min(1100px,95%)",
+        width: "min(1100px,98%)",
         margin: "0 auto",
         paddingBottom: 16,
       }}
     >
       {/* 검색/필터 */}
-      <div style={{ display: "flex", justifyContent: "space-between", flexWrap: "wrap", gap: 12 }}>
+      <div style={{ display: "flex", flexDirection: isMobile ? "column" : "row", justifyContent: "space-between", flexWrap: "wrap", gap: 10 }}>
         <div
           style={{
             display: "flex",
@@ -266,8 +273,9 @@ export default function AdminUsers() {
             border: "1px solid #d9e4ef",
             borderRadius: 10,
             padding: "4px 10px",
-            maxWidth: 520,
+            width: isMobile ? "100%" : undefined,
             height: 38,
+            boxSizing: "border-box",
           }}
         >
           <LuSearch size={18} color="#6b7a90" />
@@ -276,16 +284,16 @@ export default function AdminUsers() {
             onChange={(e) => setQ(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && fetchList({ page: 1 })}
             placeholder="아이디, 이름, 이메일 검색"
-            style={{ border: "none", outline: "none", width: 240, height: 30, fontSize: 14 }}
+            style={{ border: "none", outline: "none", flex: 1, minWidth: 0, height: 30, fontSize: 14 }}
           />
-          <button onClick={() => fetchList({ page: 1 })} style={{ ...btnPrimary, height: 30, padding: "0 14px" }}>
+          <button onClick={() => fetchList({ page: 1 })} style={{ ...btnPrimary, height: 30, padding: "0 14px", flexShrink: 0 }}>
             검색
           </button>
           <button
             onClick={() => {
               setQ(""); setRole(""); setStatus(""); setSort("createdAt:desc"); setPage(1); fetchList({ page: 1 });
             }}
-            style={{ ...btnGhost, height: 30 }}
+            style={{ ...btnGhost, height: 30, flexShrink: 0 }}
             title="초기화"
           >
             <LuRefreshCw />
@@ -357,10 +365,11 @@ export default function AdminUsers() {
           border: "1px solid #e6eef7",
           boxShadow: "0 8px 20px rgba(31,64,135,.06)",
           padding: 8,
-          overflowX: "hidden", // 폭 튀는 현상 방지
+          overflowX: "auto",
+          WebkitOverflowScrolling: "touch",
         }}
       >
-        <table style={{ width: "100%", borderCollapse: "collapse", tableLayout: "fixed" }}>
+        <table style={{ width: "100%", minWidth: 720, borderCollapse: "collapse", tableLayout: "fixed" }}>
           <thead style={{ background: C.headBg }}>
             <tr>
               <th style={{ width: 40 }}>
