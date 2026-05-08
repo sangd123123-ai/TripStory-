@@ -10,6 +10,12 @@ export const Card = styled.div`
   margin: 40px auto;
   box-shadow: 0 12px 30px rgba(147, 51, 234, 0.08);
   backdrop-filter: blur(8px);
+
+  @media (max-width: 768px) {
+    padding: 20px 16px;
+    margin: 16px auto;
+    border-radius: 16px;
+  }
 `;
 
 // 섹션 헤더
@@ -36,6 +42,13 @@ export const InputContainer = styled.div`
   padding: 12px 18px;
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.05);
   border: 1px solid #ede9fe;
+
+  @media (max-width: 480px) {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+    padding: 14px;
+  }
 `;
 
 export const Input = styled.input`
@@ -67,8 +80,11 @@ export const Button = styled.button`
   cursor: pointer;
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 6px;
   transition: all 0.25s ease;
+  white-space: nowrap;
+  flex-shrink: 0;
 
   &:hover:not(:disabled) {
     transform: scale(1.05);
@@ -78,6 +94,11 @@ export const Button = styled.button`
   &:disabled {
     opacity: 0.6;
     cursor: not-allowed;
+  }
+
+  @media (max-width: 480px) {
+    width: 100%;
+    padding: 12px;
   }
 `;
 
@@ -191,5 +212,10 @@ export const FilterOption = styled.button`
   &:disabled {
     opacity: 0.5;
     cursor: not-allowed;
+  }
+
+  @media (max-width: 480px) {
+    padding: 8px 12px;
+    font-size: 13px;
   }
 `;

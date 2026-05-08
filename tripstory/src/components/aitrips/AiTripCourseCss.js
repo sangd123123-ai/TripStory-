@@ -8,6 +8,10 @@ export const Container = styled.div`
   justify-content: center;
   align-items: flex-start;
   padding: 60px 20px;
+
+  @media (max-width: 768px) {
+    padding: 24px 12px;
+  }
 `;
 
 export const MaxWidthContainer = styled.div`
@@ -31,6 +35,10 @@ export const Title = styled.h1`
   font-size: 2rem;
   font-weight: 700;
   color: #9333ea;
+
+  @media (max-width: 480px) {
+    font-size: 1.4rem;
+  }
 `;
 
 export const Subtitle = styled.p`

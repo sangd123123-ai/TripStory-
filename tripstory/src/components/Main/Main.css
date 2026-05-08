@@ -161,6 +161,10 @@ main.home{
   border-bottom: 1px solid #eef2f7;
 }
 .notice-modal__hero img{ width:100%; height:100%; object-fit:cover; filter:brightness(.95); }
+@media (max-width: 600px) {
+  .notice-modal__hero { height: 180px; }
+  .notice-modal__body { padding: 12px 14px; }
+}
 
 .notice-modal__body{
   padding: 18px 22px;

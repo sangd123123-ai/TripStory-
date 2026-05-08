@@ -6,16 +6,27 @@ import {
   LuLayoutDashboard,
   LuUsers,
   LuMegaphone,
-  LuRefreshCw
+  LuRefreshCw,
+  LuX
 } from "react-icons/lu";
 import { manualRefresh } from "./AdminApi";
 
-// 공통 헤더(TripStory 헤더)가 fixed라서, 전체 래퍼에 헤더 높이만큼 top padding을 준다.
-const HEADER_H = 0; // 필요하면 64/80 등으로 미세조정
+const HEADER_H = 0;
 
 export default function AdminLayout({ children }) {
   const [open, setOpen] = useState(true);
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
   const { pathname } = useLocation();
+
+  useEffect(() => {
+    const onResize = () => {
+      const mobile = window.innerWidth <= 768;
+      setIsMobile(mobile);
+      if (!mobile) setOpen(true);
+    };
+    window.addEventListener("resize", onResize);
+    return () => window.removeEventListener("resize", onResize);
+  }, []);
 
   // ⏱ 토큰 남은 시간 표시
   const [tokenLeft, setTokenLeft] = useState("-");
@@ -59,23 +70,48 @@ export default function AdminLayout({ children }) {
   };
   const meta = pageMeta[pathname] || pageMeta["/admin"];
 
+  const closeSidebar = () => { if (isMobile) setOpen(false); };
+
   return (
-    <div style={styles.shell}>
+    <div style={{ ...styles.shell, gridTemplateColumns: isMobile ? "1fr" : `${open ? 230 : 70}px 1fr` }}>
+      {/* 모바일 오버레이 */}
+      {isMobile && open && (
+        <div
+          onClick={closeSidebar}
+          style={{
+            position: "fixed", inset: 0,
+            background: "rgba(0,0,0,0.45)",
+            zIndex: 200,
+          }}
+        />
+      )}
+
       {/* ===== 사이드바 ===== */}
-      <aside style={{ ...styles.sidebar, width: open ? 230 : 70 }}>
+      <aside style={{
+        ...styles.sidebar,
+        width: open ? 230 : (isMobile ? 0 : 70),
+        ...(isMobile ? {
+          position: "fixed",
+          top: 0, left: 0, bottom: 0,
+          zIndex: 300,
+          transform: open ? "translateX(0)" : "translateX(-100%)",
+          transition: "transform 0.25s ease",
+          overflow: "hidden",
+        } : {}),
+      }}>
         <div style={styles.sidebarSticky}>
           <div style={styles.brand}>
             <button aria-label="Toggle sidebar" onClick={() => setOpen(!open)} style={styles.burgerBtn}>
-              <LuMenu size={22} />
+              {isMobile && open ? <LuX size={22} /> : <LuMenu size={22} />}
             </button>
             {open && <span style={styles.brandText}>Admin Console</span>}
           </div>
 
           <nav style={styles.nav}>
-            <SideItem to="/admin" icon={<LuLayoutDashboard size={18} />} label="대시보드" open={open} />
-            <SideItem to="/admin/users" icon={<LuUsers size={18} />} label="유저 관리" open={open} />
-            <SideItem to="/admin/notice" icon={<LuMegaphone size={18} />} label="공지사항 추가" open={open} />
-            <SideItem to="/admin/approval" icon={<LuMegaphone size={18} />} label="알림" open={open} />
+            <SideItem to="/admin" icon={<LuLayoutDashboard size={18} />} label="대시보드" open={open} onClick={closeSidebar} />
+            <SideItem to="/admin/users" icon={<LuUsers size={18} />} label="유저 관리" open={open} onClick={closeSidebar} />
+            <SideItem to="/admin/notice" icon={<LuMegaphone size={18} />} label="공지사항 추가" open={open} onClick={closeSidebar} />
+            <SideItem to="/admin/approval" icon={<LuMegaphone size={18} />} label="알림" open={open} onClick={closeSidebar} />
           </nav>
 
           <div style={styles.sidebarFooter}>
@@ -85,12 +121,23 @@ export default function AdminLayout({ children }) {
       </aside>
 
       {/* ===== 메인 컨텐츠 ===== */}
-      <main style={styles.main}>
+      <main style={{ ...styles.main, minWidth: 0 }}>
         {/* 상단 제목 카드 */}
         <header style={styles.headerCard}>
-          <div>
-            <h1 style={styles.pageTitle}>{meta.title}</h1>
-            <p style={styles.pageDesc}>{meta.desc}</p>
+          <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+            {isMobile && (
+              <button
+                onClick={() => setOpen(true)}
+                style={{ ...styles.burgerBtn, background: "rgba(255,255,255,0.2)", color: "#fff" }}
+                aria-label="메뉴 열기"
+              >
+                <LuMenu size={20} />
+              </button>
+            )}
+            <div>
+              <h1 style={styles.pageTitle}>{meta.title}</h1>
+              <p style={styles.pageDesc}>{meta.desc}</p>
+            </div>
           </div>
           <div style={{ display: "flex", gap: 8 }} />
         </header>
@@ -119,7 +166,7 @@ export default function AdminLayout({ children }) {
 }
 
 /* ===== 사이드 메뉴 항목 ===== */
-function SideItem({ to, icon, label, open }) {
+function SideItem({ to, icon, label, open, onClick }) {
   const base = {
     display: "flex",
     alignItems: "center",
@@ -142,6 +189,7 @@ function SideItem({ to, icon, label, open }) {
     <NavLink
       to={to}
       end
+      onClick={onClick}
       style={({ isActive }) => (isActive ? { ...base, ...active } : base)}
       onMouseEnter={(e) => Object.assign(e.currentTarget.style, hover)}
       onMouseLeave={(e) => Object.assign(e.currentTarget.style, base)}
@@ -208,7 +256,7 @@ const styles = {
     justifyContent: "space-between",
     background: "linear-gradient(90deg, #22a7f0 0%, #26d0ce 100%)",
     borderRadius: 14,
-    padding: "20px 24px",
+    padding: "16px 20px",
     color: "#fff",
     boxShadow: "0 6px 14px rgba(0,0,0,0.1)",
     marginBottom: 20,

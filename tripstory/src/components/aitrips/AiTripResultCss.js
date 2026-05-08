@@ -8,6 +8,12 @@ export const ResultContainer = styled.div`
   background: linear-gradient(to bottom right, #e0f2ff, #faf5ff);
   border-radius: 20px;
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.05);
+
+  @media (max-width: 768px) {
+    margin: 16px auto;
+    padding: 14px 12px;
+    border-radius: 14px;
+  }
 `;
 
 export const TimelineDay = styled.div`
@@ -17,6 +23,11 @@ export const TimelineDay = styled.div`
   border-radius: 16px;
   backdrop-filter: blur(10px);
   box-shadow: 0 8px 24px rgba(59, 130, 246, 0.08);
+
+  @media (max-width: 768px) {
+    margin: 20px 0;
+    padding: 16px 12px;
+  }
 `;
 
 export const DayHeader = styled.h2`
@@ -71,6 +82,12 @@ export const TripImage = styled.img`
   &:hover {
     transform: scale(1.03);
   }
+
+  @media (max-width: 768px) {
+    width: 100%;
+    height: 180px;
+    flex-shrink: unset;
+  }
 `;
 
 export const TripContent = styled.div`
@@ -122,9 +139,15 @@ export const CostBox = styled.div`
 
 export const ActionButtons = styled.div`
   display: flex;
+  flex-wrap: wrap;
   gap: 12px;
   justify-content: center;
   margin-top: 30px;
+
+  @media (max-width: 480px) {
+    flex-direction: column;
+    align-items: stretch;
+  }
 `;
 
 export const ActionButton = styled.button`
@@ -140,5 +163,10 @@ export const ActionButton = styled.button`
   &:hover {
     transform: scale(1.05);
     box-shadow: 0 6px 16px rgba(59, 130, 246, 0.2);
+  }
+
+  @media (max-width: 480px) {
+    width: 100%;
+    padding: 14px;
   }
 `;
