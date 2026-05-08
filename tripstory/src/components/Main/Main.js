@@ -163,9 +163,6 @@ export default function Main() {
   const [weatherSummary, setWeatherSummary] = useState(null);
   const [region, setRegion] = useState("seoul");
 
-  // ✅ 다가오는 축제(7일)
-  const [weeklyFestivals, setWeeklyFestivals] = useState([]);
-  const [selectedRegion, setSelectedRegion] = useState("");
 
   // 공지 가져오기
   useEffect(() => {
@@ -252,23 +249,6 @@ export default function Main() {
     return () => { alive = false; };
   }, [region]);
 
-  // ✅ 다가오는 축제(7일) 로드
-  useEffect(() => {
-    let alive = true;
-    (async () => {
-      try {
-        const { data } = await axios.get(`${API_BASE}/api/weekly-festival`, {
-          params: { windowDays: 7, limit: 8 },
-          withCredentials: true,
-        });
-        if (!alive) return;
-        setWeeklyFestivals(data?.list || []);
-      } catch (e) {
-        console.error("[weekly-festival] load fail:", e?.message || e);
-      }
-    })();
-    return () => { alive = false; };
-  }, []);
 
   // 캐러셀 길이 (TripStory + 공지들 + More 카드)
   const total = 2 + notices.length;
@@ -458,56 +438,6 @@ export default function Main() {
             );
           })}
         </div>
-      </section>
-
-      {/* 3) 🎉 다가오는 축제 (7일 이내) */}
-      <section className="weather-reco" style={{ marginTop: 30 }}>
-        <header className="section-head">
-          <h2 className="section-title">🎉 다가오는 축제 (7일 이내)</h2>
-        </header>
-
-        {weeklyFestivals.length === 0 && (
-          <p className="section-empty">일주일 내 예정된 축제가 없어요.</p>
-        )}
-
-        {/* 리스트 출력 */}
-        <ul className="festival-list">
-          {weeklyFestivals
-            .filter((f) => !selectedRegion || (f.area && f.area.includes(selectedRegion)))
-            .map((f) => {
-              const placeQuery = (f.place || f['개최장소'] || f.location || f.name || '').trim();
-              const mapUrl = `https://map.naver.com/p/search/${encodeURIComponent(placeQuery)}`;
-              return (
-                <li key={f.id} className="festival-item">
-                  <h4 className="festival-title">
-                    {f.area ? <span className="festival-area">[{f.area}]</span> : null}
-                    {f.name}
-                  </h4>
-
-                  <div className="festival-meta">
-                    <div className="festival-row">
-                      <span className="ico">📍</span>
-                      <span className="txt">{f.place || "장소 정보 없음"}</span>
-                    </div>
-                    <div className="festival-row">
-                      <span className="ico">🗓</span>
-                      <span className="txt">{(f.startDate || f.start)} ~ {(f.endDate || f.end)}</span>
-                    </div>
-                  </div>
-
-                  <a
-                    className="festival-link"
-                    href={mapUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    aria-label={`${f.name} 네이버 지도에서 열기`}
-                  >
-                    ▶ 네이버 지도에서 열기
-                  </a>
-                </li>
-              );
-            })}
-        </ul>
       </section>
 
       {/* 공지 상세 모달 */}
