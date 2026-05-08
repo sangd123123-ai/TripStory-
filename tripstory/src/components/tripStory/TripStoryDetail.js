@@ -51,6 +51,17 @@ const WebtoonImage = styled.img`
   margin-bottom: 10px;
 `;
 
+const HeroPlaceholder = styled.div`
+  width: 100%;
+  height: 500px;
+  background: linear-gradient(135deg, #e0e7ff 0%, #f0fdf4 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 5rem;
+  color: #94a3b8;
+`;
+
 const Content = styled.div`
   padding: 32px;
 `;
@@ -117,9 +128,10 @@ function TripStoryDetail({ user }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-    // ✅ 이미지 경로 자동 보정 함수 (Feed와 동일)
+  const [failedImages, setFailedImages] = React.useState({});
+
   const getImageUrl = (url) => {
-    if (!url) return '/img/noimage.png';
+    if (!url) return null;
     if (url.startsWith('http')) return url;
     return `${process.env.REACT_APP_API_URL || ''}${url}`;
   };
@@ -213,13 +225,32 @@ function TripStoryDetail({ user }) {
       <Card>
         {story.imageUrls && story.imageUrls.length > 0 ? (
           <div>
-            {story.imageUrls.map((url, index) => (
-              <WebtoonImage key={index} src={getImageUrl(url)} alt={`${story.title} - cut ${index + 1}`} />
-            ))}
+            {story.imageUrls.map((url, index) => {
+              const src = getImageUrl(url);
+              return failedImages[index] || !src ? (
+                <HeroPlaceholder key={index} style={{ height: 300 }}>✈️</HeroPlaceholder>
+              ) : (
+                <WebtoonImage
+                  key={index}
+                  src={src}
+                  alt={`${story.title} - cut ${index + 1}`}
+                  onError={() => setFailedImages(prev => ({ ...prev, [index]: true }))}
+                />
+              );
+            })}
           </div>
-        ) : (
-          <HeroImage src={getImageUrl(story.imageUrl || story.image_url)} alt={story.title} />
-        )}
+        ) : (() => {
+          const src = getImageUrl(story.imageUrl || story.image_url);
+          return failedImages['hero'] || !src ? (
+            <HeroPlaceholder>✈️</HeroPlaceholder>
+          ) : (
+            <HeroImage
+              src={src}
+              alt={story.title}
+              onError={() => setFailedImages(prev => ({ ...prev, hero: true }))}
+            />
+          );
+        })()}
         
         <Content>
           <Title>{story.title}</Title>

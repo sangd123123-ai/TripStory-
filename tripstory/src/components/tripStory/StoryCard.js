@@ -25,6 +25,17 @@ const Image = styled.img`
   object-fit: cover;
 `;
 
+const ImagePlaceholder = styled.div`
+  width: 100%;
+  height: 260px;
+  background: linear-gradient(135deg, #e0e7ff 0%, #f0fdf4 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 3rem;
+  color: #94a3b8;
+`;
+
 const Info = styled.div`
   padding: 18px 20px;
 
@@ -66,29 +77,37 @@ const CommentCount = styled.span`
 
 function StoryCard({ story, user }) {
   const navigate = useNavigate();
+  const [imgError, setImgError] = React.useState(false);
 
   const handleCardClick = (e) => {
-    // 좋아요 버튼 클릭 시 상세 페이지 이동 방지
     if (e.target.tagName === 'BUTTON' || e.target.closest('button')) {
       return;
     }
     navigate(`/tripstory/${story._id}`);
   };
 
-  
-  // ✅ 이미지 경로 자동 보정 함수
   const getImageUrl = (url) => {
-    if (!url) return '/img/noimage.png';
+    if (!url) return null;
     if (url.startsWith('http')) return url;
     return `${process.env.REACT_APP_API_URL || ''}${url}`;
   };
 
+  const rawUrl = (story.imageUrls && story.imageUrls.length > 0)
+    ? story.imageUrls[0]
+    : (story.imageUrl || story.image_url);
+  const imageUrl = getImageUrl(rawUrl);
+
   return (
     <Card onClick={handleCardClick}>
-      <Image
-        src={getImageUrl((story.imageUrls && story.imageUrls.length > 0) ? story.imageUrls[0] : (story.imageUrl || story.image_url))}
-        alt={story.title}
-      />
+      {imageUrl && !imgError ? (
+        <Image
+          src={imageUrl}
+          alt={story.title}
+          onError={() => setImgError(true)}
+        />
+      ) : (
+        <ImagePlaceholder>✈️</ImagePlaceholder>
+      )}
       <Info>
         <h3>{story.title}</h3>
         <span>{story.region} · {story.mood}</span>
