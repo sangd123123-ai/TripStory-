@@ -187,6 +187,10 @@ app.get("/_envcheck", (req, res) => {
 
 const MONGODB_URI = process.env.MONGODB_URI;
 
+app.get('/healthz', (_req, res) => {
+  res.json({ ok: true });
+});
+
 mongoose
   .connect(MONGODB_URI)
   .then(async () => {
@@ -207,13 +211,16 @@ mongoose
       console.warn('관리자 마이그레이션 실패(무시):', e.message);
     }
 
-    // 벤더 샘플 데이터 전체 삭제 (1회성)
+    // 서버 시작 시 벤더 데이터를 지우는 작업은 위험하므로
+    // 개발 환경에서 명시적으로 허용한 경우에만 실행합니다.
     try {
-      const Vendor = require('./models/Vendor');
-      const result = await Vendor.deleteMany({});
-      if (result.deletedCount > 0) console.log(`[market] 벤더 샘플 데이터 ${result.deletedCount}건 삭제`);
+      if (process.env.NODE_ENV === 'development' && process.env.CLEAR_VENDOR_SAMPLE_DATA === 'true') {
+        const Vendor = require('./models/Vendor');
+        const result = await Vendor.deleteMany({});
+        if (result.deletedCount > 0) console.log(`[market] 벤더 샘플 데이터 삭제 완료: ${result.deletedCount}건`);
+      }
     } catch (e) {
-      console.warn('[market] 벤더 삭제 실패(무시):', e.message);
+      console.warn('[market] 벤더 샘플 데이터 삭제 건너뜀:', e.message);
     }
 
     app.listen(PORT, () => {
