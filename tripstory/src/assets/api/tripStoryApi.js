@@ -144,7 +144,7 @@ export const deleteStory = async (storyId) => {
   return res.data;
 };
 
-export default {
+const tripStoryApi = {
   getAiStory,
   fetchStories,
   getStory,
@@ -155,3 +155,5 @@ export default {
   updateStory,
   deleteStory,
 };
+
+export default tripStoryApi;

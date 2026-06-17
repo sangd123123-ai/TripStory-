@@ -1,6 +1,6 @@
 // src/admin/bridgeAuth.js — ✅ 최종 확정판
 import AdminApi, { http as adminHttp } from '../assets/api/admin';
-import api, { Auth } from '../assets/api/index';
+import { Auth } from '../assets/api/index';
 
 // 공용 키(참고용): 관리자 액세스 토큰
 export const ADMIN_ACCESS_KEY = 'adminAccessToken';

@@ -10,9 +10,9 @@ import AdminApi from "../../assets/api/admin";
 const Header = () => {
   const navigate = useNavigate();
 
-  const { user, loading: userLoading, reload: userReload } =
+  const { user, loading: userLoading } =
     useContext(AuthContext) || {};
-  const { admin, loading: adminLoading, reload: adminReload } =
+  const { admin, loading: adminLoading } =
     useContext(AdminContext) || {};
 
   const [loggingOut, setLoggingOut] = useState(false);

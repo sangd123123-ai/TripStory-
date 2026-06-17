@@ -11,8 +11,6 @@ import {
 } from "react-icons/lu";
 import { manualRefresh } from "./AdminApi";
 
-const HEADER_H = 0;
-
 export default function AdminLayout({ children }) {
   const [open, setOpen] = useState(true);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);

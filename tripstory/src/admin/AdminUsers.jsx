@@ -91,7 +91,7 @@ export default function AdminUsers() {
   const [list, setList] = useState([]);
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
-  const [size, setSize] = useState(20);
+  const [size] = useState(20);
   const [sort, setSort] = useState("lastLogin:desc");
   const [q, setQ] = useState("");
   const [role, setRole] = useState("");

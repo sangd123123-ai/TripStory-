@@ -278,7 +278,6 @@ export default function Main() {
   }, [skipScroll]);
 
   const openNotice = useCallback((id) => setOpenId(id), []);
-  const closeNotice = useCallback(() => setOpenId(null), []);
 
   // ✅ 네이버 일반 검색 링크 (코스/축제 공통 사용)
   const searchLink = (name, areaOrPlace) =>

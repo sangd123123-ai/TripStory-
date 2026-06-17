@@ -356,7 +356,7 @@ export default function LocalMarket() {
   },[allVendors]);
 
   // 🎟️ 쿠폰 계산 헬퍼
-  const { discountPercentFor, hasCouponFor } = useCouponHelpers(coupons);
+  const { discountPercentFor } = useCouponHelpers(coupons);
 
   const filteredProducts = useMemo(()=>{
     let r=[...allProducts];
