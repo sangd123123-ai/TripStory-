@@ -4,7 +4,7 @@ import { Auth } from '../../assets/api/index';
 import { AuthContext } from '../../context/AuthContext';
 import './Login.css';
 
-// ✅ 백엔드 절대경로 (front.env: REACT_APP_API_URL=)
+// 백엔드 절대 URL입니다. 배포환경에서는 REACT_APP_API_URL로 설정됩니다.
 const API = (process.env.REACT_APP_API_URL || '').replace(/\/$/, '');
 
 export default function Login({ onAuthed }) {
@@ -18,6 +18,7 @@ export default function Login({ onAuthed }) {
   const onSubmit = async (e) => {
     e.preventDefault();
     setMsg('');
+
     try {
       const user = await Auth.login(userId, pw);
       onAuthed?.(user);
@@ -26,8 +27,8 @@ export default function Login({ onAuthed }) {
       setPw('');
       nav(user?.role === 'admin' ? '/admin' : '/', { replace: true });
     } catch (err) {
-      const m = err?.response?.data?.message || '로그인 실패';
-      setMsg(m);
+      const message = err?.response?.data?.message || '로그인에 실패했습니다.';
+      setMsg(message);
     }
   };
 
@@ -63,23 +64,19 @@ export default function Login({ onAuthed }) {
 
         <div className="divider"><span>또는</span></div>
 
-        {/* ✅ 공식 풀컬러 로고 버튼 (안 깨짐 / 접근성 O) */}
         <nav className="social-stack" aria-label="소셜 로그인">
-          {/* Kakao */}
           <a
             className="btn-social kakao"
             href={`${API}/auth/kakao`}
             aria-label="카카오로 로그인"
             rel="nofollow noopener"
           >
-            {/* ✅ 카카오 말풍선 로고 (인라인 SVG) */}
             <svg className="kakao-icon" viewBox="0 0 24 24" aria-hidden="true">
-              <path d="M12 3C7.03 3 3 6.25 3 10.14c0 2.43 1.6 4.56 4.03 5.86l-.83 3.15a.5.5 0 0 0 .76.55l3.57-2.12c.48.07.98.11 1.47.11 4.97 0 9-3.25 9-7.55C21 6.25 16.97 3 12 3z"></path>
+              <path d="M12 3C7.03 3 3 6.25 3 10.14c0 2.43 1.6 4.56 4.03 5.86l-.83 3.15a.5.5 0 0 0 .76.55l3.57-2.12c.48.07.98.11 1.47.11 4.97 0 9-3.25 9-7.55C21 6.25 16.97 3 12 3z" />
             </svg>
             <span>카카오로 로그인</span>
           </a>
 
-          {/* Google */}
           <a
             className="btn-social google"
             href={`${API}/auth/google`}

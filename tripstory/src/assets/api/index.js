@@ -1,22 +1,20 @@
 // src/assets/api/index.js
 import axios from 'axios';
 
-// 개발환경: '' (proxy 사용), 프로덕션: REACT_APP_API_URL (Railway URL)
+// 개발환경은 proxy를 쓰기 위해 빈 문자열을 사용하고, 배포환경은 Render 백엔드 URL을 사용합니다.
 const API_BASE = process.env.REACT_APP_API_URL || '';
-// ===== accessToken 메모리/로컬 동기화 =====
+
 let accessToken =
   (typeof window !== 'undefined' &&
     window.localStorage.getItem('accessToken')) ||
   null;
 
-// ===== 공용 axios 인스턴스 =====
 export const api = axios.create({
   baseURL: API_BASE,
-  withCredentials: true, // 쿠키(rt) 주고받으려면 필수
+  withCredentials: true,
   headers: { 'Content-Type': 'application/json' },
 });
 
-// ===== 요청 인터셉터: Authorization 자동 첨부 =====
 api.interceptors.request.use((cfg) => {
   if (accessToken) {
     cfg.headers.Authorization = `Bearer ${accessToken}`;
@@ -24,24 +22,23 @@ api.interceptors.request.use((cfg) => {
   return cfg;
 });
 
-// ===== 응답 인터셉터: 401이면 한 번만 refresh 시도 =====
-let refreshing = null; // 동시에 여러 요청 401 -> 한 번만 /auth/refresh 날리고 모두 대기
+let refreshing = null;
 
 api.interceptors.response.use(
   (res) => res,
   async (error) => {
     const original = error.config;
     if (!original || original._retry) {
-        return Promise.reject(error);
+      return Promise.reject(error);
     }
 
     if (error.response?.status === 401) {
       if (sessionStorage.getItem('auth_logged_out')) {
         return Promise.reject(error);
       }
+
       try {
         if (!refreshing) {
-          // refreshToken은 httpOnly 쿠키라서 withCredentials 필요
           refreshing = axios
             .post(`${API_BASE}/auth/refresh`, null, { withCredentials: true })
             .then((r) => {
@@ -63,17 +60,15 @@ api.interceptors.response.use(
         const newAT = await refreshing;
         if (!newAT) throw error;
 
-        // 원래 요청 다시 쏘기
         original._retry = true;
         original.headers = {
           ...(original.headers || {}),
           Authorization: `Bearer ${newAT}`,
         };
-        original.withCredentials = true;   // ✅ refresh 이후 재시도에 쿠키 강제 포함
+        original.withCredentials = true;
         original.baseURL = API_BASE;
         return api.request(original);
       } catch (e) {
-        // refresh도 실패 -> 로그인 안 된 상태로 정리
         accessToken = null;
         window.localStorage.removeItem('accessToken');
         delete api.defaults.headers.Authorization;
@@ -85,27 +80,22 @@ api.interceptors.response.use(
   }
 );
 
-// ===== 공개 Auth API =====
 export const Auth = {
-  /** 회원가입 */
   async register(arg1, password, nickname, extra = {}) {
-    // 두 스타일 모두 허용: register({email, password, ...}) 또는 register(email, password, nickname)
-    let body;
-    if (typeof arg1 === 'object' && arg1 !== null) {
-      body = arg1;
-    } else {
-      body = { email: arg1, password, nickname, ...extra };
-    }
+    const body =
+      typeof arg1 === 'object' && arg1 !== null
+        ? arg1
+        : { email: arg1, password, nickname, ...extra };
+
     const { data } = await api.post('/auth/register', body);
     return data.user;
   },
 
-  /** 로그인 -> accessToken 저장 + user 리턴 */
   async login(userId, password) {
     const { data } = await axios.post(
       `${API_BASE}/auth/login`,
       { userId, password },
-      { withCredentials: true } // refreshToken 쿠키 심어주는 응답 받아야 하니까
+      { withCredentials: true }
     );
 
     accessToken = data?.accessToken || null;
@@ -118,13 +108,11 @@ export const Auth = {
     return data?.user || null;
   },
 
-  /** 내 정보 조회 */
   async me() {
     const { data } = await api.get('/auth/me');
     return data?.user || null;
   },
 
-  /** 로그아웃 -> 서버 세션/쿠키 정리 + 프론트 토큰 비우기 */
   async logout() {
     await axios.post(`${API_BASE}/auth/logout`, null, {
       withCredentials: true,
@@ -135,7 +123,6 @@ export const Auth = {
     sessionStorage.setItem('auth_logged_out', '1');
   },
 
-  /** 앱 부팅 시(새로고침 직후 등) refresh 먼저 시도해서 세션 복구 */
   async bootRefresh() {
     try {
       const r = await axios.post(
@@ -162,7 +149,6 @@ export const Auth = {
     }
   },
 
-  /** 소셜로그인 등에서 받은 토큰 주입 */
   setAccessToken(token) {
     accessToken = token || null;
     if (token) {

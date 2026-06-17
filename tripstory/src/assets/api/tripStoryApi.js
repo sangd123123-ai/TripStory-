@@ -38,7 +38,7 @@ const processQueue = (error, token = null) => {
 };
 
 async function refreshToken() {
-  const res = await api.post('/auth/refresh', {});
+  const res = await axios.post(`${API_BASE}/auth/refresh`, {}, { withCredentials: true });
   const newToken = res.data?.accessToken || res.data?.token;
   if (!newToken) throw new Error('새 토큰을 받지 못했습니다.');
   localStorage.setItem('token', newToken);
@@ -80,7 +80,7 @@ api.interceptors.response.use(
       localStorage.removeItem('token');
       localStorage.removeItem('accessToken');
       localStorage.removeItem('user');
-      alert('로그인이 만료되었습니다. 다시 로그인해주세요.');
+      alert('로그인이 만료되었습니다. 다시 로그인해 주세요.');
       window.location.href = '/login';
       return Promise.reject(refreshError);
     } finally {
