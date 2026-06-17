@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import ImageGenerateModal from './Imagegeneratemodal';
 
@@ -273,7 +273,7 @@ const Button = styled.button`
 
 function MyTripSelectModal({ onClose, user, trips = [] }) {
   // ✅ trips를 props로 받음 (여행기록 담당자가 전달)
-  const [loading, setLoading] = useState(false);
+  const [loading] = useState(false);
   const [selectedTrip, setSelectedTrip] = useState(null);
   const [showImageModal, setShowImageModal] = useState(false);
 

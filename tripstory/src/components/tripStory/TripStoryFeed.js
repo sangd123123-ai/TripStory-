@@ -22,22 +22,6 @@ const ButtonGroup = styled.div`
   margin: 20px 30px;
 `;
 
-const WriteButton = styled.button`
-  display: inline-block;
-  padding: 10px 16px;
-  background: #4f46e5;
-  color: white;
-  border-radius: 10px;
-  border: none;
-  cursor: pointer;
-  font-weight: 500;
-  transition: background 0.2s ease;
-
-  &:hover {
-    background: #3730a3;
-  }
-`;
-
 // ✅ 검색 버튼 스타일 추가 (다른 색상)
 const SearchButton = styled.button`
   display: inline-block;

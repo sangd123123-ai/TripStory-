@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
@@ -151,25 +151,6 @@ const Select = styled.select`
   &:focus {
     outline: none;
     border-color: #4f46e5;
-  }
-`;
-
-const Input = styled.input`
-  width: 100%;
-  padding: 12px 14px;
-  border: 2px solid #e2e8f0;
-  border-radius: 10px;
-  font-size: 14px;
-  color: #1e293b;
-  transition: border-color 0.2s;
-
-  &:focus {
-    outline: none;
-    border-color: #4f46e5;
-  }
-
-  &::placeholder {
-    color: #94a3b8;
   }
 `;
 
@@ -386,7 +367,7 @@ function ImageGenerateModal({ tripData, onClose, user }) {
         throw new Error('트립스토리 게시 실패');
       }
 
-      const result = await response.json();
+      await response.json();
       alert('✅ 트립스토리가 성공적으로 게시되었습니다!');
       navigate('/tripstory/feed', { state: { refetch: true } }); // 피드로 이동 및 새로고침
       onClose(); // 모달 닫기
@@ -400,11 +381,6 @@ function ImageGenerateModal({ tripData, onClose, user }) {
   };
 
   // 트립스토리로 이동 (이전 기능, 이제 사용 안 함)
-  const handleViewInFeed = () => {
-    navigate('/tripstory/feed', { state: { refetch: true } });
-    onClose();
-  };
-
   return (
     <Overlay onClick={onClose}>
       <ModalContainer onClick={(e) => e.stopPropagation()}>

@@ -167,7 +167,7 @@ export default function WeatherMap() {
     const alt = weatherPlaceName && weatherPlaceName.trim();
     if (alt) {
       // alt 가 완전 영문/숫자/하이픈만으로 구성돼 있으면 버려
-      const looksEnglish = /^[A-Za-z0-9 .'\-]+$/.test(alt);
+      const looksEnglish = /^[A-Za-z0-9 .'-]+$/.test(alt);
       if (!looksEnglish) {
         return alt; // alt 안에 한글이나 혼합이 있으면 그냥 써
       }
