@@ -8,8 +8,6 @@ const approvalTrip = mongoose.model('approvaldbs')
 const mytrip = mongoose.model('mytripdbs')
 const User = mongoose.model('userdbs')
 
-// ✅ authRequired fallback 추가
-const jwt = require('jsonwebtoken');
 const auth = require('./auth');
 const { requireUser, requireAdmin } = require('../middlewares/auth');
 
@@ -20,30 +18,6 @@ const authRequired = auth.authRequired || ((req, res, next) => {
   }
   next();
 });
-
-// ✅ 관리자 토큰(admin-auth 발급용) 직접 검증 추가
-const legacyAdminRequired = (req, res, next) => {
-  try {
-    const header = req.headers.authorization || '';
-    const token = header.startsWith('Bearer ') ? header.slice(7) : null;
-    if (!token) {
-      return res.status(403).json({ error: true, message: '관리자 토큰이 없습니다.' });
-    }
-
-    const payload = jwt.verify(token, process.env.JWT_ACCESS_SECRET);
-
-    // 여기 핵심
-    if (payload.role !== 'admin') {
-      return res.status(403).json({ error: true, message: '관리자 권한이 필요합니다.' });
-    }
-
-    req.user = payload;
-    next();
-  } catch (err) {
-    console.error('adminRequired 인증 실패:', err.message);
-    return res.status(403).json({ error: true, message: '관리자 인증 실패' });
-  }
-};
 
 // 관리자 승인 처리는 공통 관리자 인증 미들웨어를 사용한다.
 const adminRequired = [requireUser, requireAdmin];
