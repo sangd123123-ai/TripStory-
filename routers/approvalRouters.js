@@ -11,6 +11,7 @@ const User = mongoose.model('userdbs')
 // ✅ authRequired fallback 추가
 const jwt = require('jsonwebtoken');
 const auth = require('./auth');
+const { requireUser, requireAdmin } = require('../middlewares/auth');
 
 // ✅ 유저 인증 미들웨어 그대로 유지
 const authRequired = auth.authRequired || ((req, res, next) => {
@@ -21,7 +22,7 @@ const authRequired = auth.authRequired || ((req, res, next) => {
 });
 
 // ✅ 관리자 토큰(admin-auth 발급용) 직접 검증 추가
-const adminRequired = (req, res, next) => {
+const legacyAdminRequired = (req, res, next) => {
   try {
     const header = req.headers.authorization || '';
     const token = header.startsWith('Bearer ') ? header.slice(7) : null;
@@ -44,7 +45,8 @@ const adminRequired = (req, res, next) => {
   }
 };
 
-console.log('adminRequired type: ', typeof adminRequired)
+// 관리자 승인 처리는 공통 관리자 인증 미들웨어를 사용한다.
+const adminRequired = [requireUser, requireAdmin];
 const router = express.Router()
 
 // 사용자: 승인 대기 목록 조회 (승인 완료 포함)
