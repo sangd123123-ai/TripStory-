@@ -2,9 +2,11 @@
 const express = require('express');
 const router = express.Router();
 const mongoose = require('mongoose');
+const { requireUser, requireAdmin } = require('../middlewares/auth');
 
 require('../models/userSchema'); // userdbs 모델 등록
 const User = mongoose.model('userdbs');
+const adminRequired = [requireUser, requireAdmin];
 
 // 유틸: 정렬 파싱 "createdAt:desc" -> { createdAt: -1 }
 function parseSort(sort) {
@@ -14,7 +16,7 @@ function parseSort(sort) {
 }
 
 // 목록
-router.get('/users', async (req, res) => {
+router.get('/users', adminRequired, async (req, res) => {
   try {
     const page = Math.max(1, parseInt(req.query.page ?? '1', 10));
     const size = Math.max(1, Math.min(100, parseInt(req.query.size ?? '20', 10)));
@@ -62,7 +64,7 @@ router.get('/users', async (req, res) => {
 });
 
 // 단건 수정 (권한/상태)
-router.patch('/users/:id', async (req, res) => {
+router.patch('/users/:id', adminRequired, async (req, res) => {
   try {
     const { role, isBlocked } = req.body;
     const update = {};
@@ -79,7 +81,7 @@ router.patch('/users/:id', async (req, res) => {
 });
 
 // 단건 삭제
-router.delete('/users/:id', async (req, res) => {
+router.delete('/users/:id', adminRequired, async (req, res) => {
   try {
     const r = await User.findByIdAndDelete(req.params.id).lean();
     if (!r) return res.status(404).json({ message: '사용자 없음' });
@@ -91,7 +93,7 @@ router.delete('/users/:id', async (req, res) => {
 });
 
 // 일괄 작업: { ids: [], action: 'block'|'unblock'|'delete' }
-router.post('/users/bulk', async (req, res) => {
+router.post('/users/bulk', adminRequired, async (req, res) => {
   try {
     const { ids, action } = req.body || {};
     if (!Array.isArray(ids) || ids.length === 0) return res.status(400).json({ message: 'ids 비어있음' });

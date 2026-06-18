@@ -9,6 +9,8 @@ function requireUser(req, res, next) {
     const token = h.startsWith('Bearer ') ? h.slice(7) : null;
     if (!token) return res.status(401).json({ message: 'no token' });
     const payload = jwt.verify(token, process.env.JWT_ACCESS_SECRET);
+    // 관리자 로그인 토큰은 sub를 쓰므로 기존 uid 흐름과 맞춰준다.
+    if (payload && !payload.uid && payload.sub) payload.uid = payload.sub;
     req.user = payload; // { uid, role, tv }
     return next();
   } catch {
@@ -19,7 +21,9 @@ function requireUser(req, res, next) {
 async function requireAdmin(req, res, next) {
   try {
     if (!req.user) return res.status(401).json({ message: 'no user' });
-    const { uid, tv } = req.user;
+    const uid = req.user.uid || req.user.sub;
+    const { tv } = req.user;
+    if (!uid) return res.status(401).json({ message: 'no user id' });
     const u = await User.findById(uid);
     if (!u) return res.status(401).json({ message: 'user not found' });
     if (u.isBlocked) return res.status(403).json({ message: 'blocked' });

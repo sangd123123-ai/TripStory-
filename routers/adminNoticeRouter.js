@@ -3,6 +3,7 @@ const express = require('express');
 const path = require('path');
 const fs = require('fs');
 const multer = require('multer');
+const { requireUser, requireAdmin } = require('../middlewares/auth');
 
 // ✅ 모델은 파일에서 바로 import (단수 등록명 'notice')
 const Notice = require('../models/noticeSchema'); // noticeSchema.js가 module.exports = model('notice', ...) 임
@@ -10,18 +11,8 @@ const Notice = require('../models/noticeSchema'); // noticeSchema.js가 module.e
 
 const router = express.Router();
 
-/* -----------------------------
-   adminRequired: 있으면 쓰고, 없으면 통과
------------------------------- */
-let adminRequired = (_req, _res, next) => next();
-try {
-  const maybe = require('./adminAuth'); // 보통은 라우터를 export하므로 adminRequired가 없을 수 있음
-  if (maybe && typeof maybe.adminRequired === 'function') {
-    adminRequired = maybe.adminRequired;
-  }
-} catch (_) {
-  // 없으면 통과 미들웨어 유지
-}
+// 관리자 공지 API는 관리자 인증을 통과한 요청만 허용한다.
+const adminRequired = [requireUser, requireAdmin];
 
 /* -----------------------------
    Multer (업로드) 설정

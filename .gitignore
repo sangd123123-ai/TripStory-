@@ -2,3 +2,4 @@ node_modules/
 tripstory/node_modules/
 tripstory/build/
 .env
+CODEX_HANDOFF.md
