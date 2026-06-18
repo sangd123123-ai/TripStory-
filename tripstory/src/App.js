@@ -137,12 +137,8 @@ function AppShell() {
           currentUser = await Auth.me();
         } catch {
           try {
-            // accessToken 만료 시 재발급 로직 (Auth.bootRestore 비슷한 역할)
-            if (Auth.bootRestore) {
-              await Auth.bootRestore();
-            } else if (Auth.refresh) {
-              await Auth.refresh();
-            }
+            // accessToken 만료 시 refresh cookie로 재발급
+            await Auth.bootRefresh();
             currentUser = await Auth.me();
           } catch {
             currentUser = null;
@@ -166,7 +162,13 @@ function AppShell() {
             const { AdminAuth } = await import("./admin/AdminApi");
             currentAdmin = await AdminAuth.me();
           } catch {
-            currentAdmin = null;
+            try {
+              await tryAdminRefreshFallback();
+              const { AdminAuth } = await import("./admin/AdminApi");
+              currentAdmin = await AdminAuth.me();
+            } catch {
+              currentAdmin = null;
+            }
           }
         }
 
@@ -210,6 +212,9 @@ function AppShell() {
     if (Auth.setAccessToken) {
       Auth.setAccessToken(null);
     }
+    localStorage.removeItem("adminAccess");
+    localStorage.removeItem("adminAccessToken");
+    localStorage.removeItem("adminProfile");
 
     setUser(null);
     setAdmin(null);

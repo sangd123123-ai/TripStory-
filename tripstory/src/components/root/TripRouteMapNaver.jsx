@@ -5,9 +5,6 @@ const TripRouteMapNaver = ({ result, onClose }) => {
   const mapRef = useRef(null);
   const [enrichedDays, setEnrichedDays] = useState(null);
 
-  // 모드는 자동차(trafast) 고정
-  const travelMode = "trafast";
-
   const normalizeRegion = (rawRegion) => {
     if (!rawRegion) return "";
     if (rawRegion.includes("강릉")) return "강원도 강릉시";
@@ -121,6 +118,8 @@ const TripRouteMapNaver = ({ result, onClose }) => {
       setEnrichedDays(finalDays);
     }
     enrichSchedules();
+  // 좌표 보정 헬퍼들은 렌더마다 재생성되지만, result가 바뀔 때만 재계산하는 기존 동작을 유지한다.
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [result]);
 
   // 지도 렌더링

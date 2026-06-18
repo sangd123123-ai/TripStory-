@@ -1,5 +1,5 @@
 // TripStorySearch.js (실시간 검색 버전)
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import styled from "styled-components";
 import { searchStories } from "../../assets/api/tripStoryApi";
 import StoryCard from "./StoryCard";
@@ -77,22 +77,7 @@ function TripStorySearch({ user }) {
   const [loading, setLoading] = useState(false);
   const [searched, setSearched] = useState(false);
 
-  // ✅ 실시간 검색 (500ms 딜레이)
-  useEffect(() => {
-    if (!query.trim()) {
-      setResults([]);
-      setSearched(false);
-      return;
-    }
-
-    const timer = setTimeout(() => {
-      handleSearch();
-    }, 500); // 타이핑 멈춘 후 0.5초 뒤 검색
-
-    return () => clearTimeout(timer);
-  }, [query]);
-
-  const handleSearch = async () => {
+  const handleSearch = useCallback(async () => {
     if (!query.trim()) return;
 
     setLoading(true);
@@ -106,7 +91,22 @@ function TripStorySearch({ user }) {
     } finally {
       setLoading(false);
     }
-  };
+  }, [query]);
+
+  // ✅ 실시간 검색 (500ms 딜레이)
+  useEffect(() => {
+    if (!query.trim()) {
+      setResults([]);
+      setSearched(false);
+      return;
+    }
+
+    const timer = setTimeout(() => {
+      handleSearch();
+    }, 500); // 타이핑 멈춘 후 0.5초 뒤 검색
+
+    return () => clearTimeout(timer);
+  }, [handleSearch, query]);
 
   const handleKeyPress = (e) => {
     if (e.key === 'Enter') {

@@ -13,7 +13,7 @@ export default function AdminProvider({ children }) {
 
   const reload = async () => {
     try {
-      const { user } = await AdminApi.me(); // ✅ /admin-auth/me 호출
+      const user = await AdminApi.me(); // /admin-auth/me 호출
       setAdmin(user || null);
     } catch {
       setAdmin(null);

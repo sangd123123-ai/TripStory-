@@ -107,7 +107,7 @@ function FestivalList() {
     };
 
     loadFestivals();
-  }, [selectedCategory]);
+  }, [API_BASE, selectedCategory]);
 
   const categories = [
     '불꽃축제',

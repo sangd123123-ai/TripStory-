@@ -19,14 +19,6 @@ const abs = (src) =>
     ? src
     : `${API_BASE}/${String(src).replace(/^\.?\/*/, "")}`;
 
-// 관리자 여부 판별 (user 객체 안에 role/roles/isAdmin 있는 경우)
-const isAdminUser = (u) => {
-  if (!u) return false;
-  if (u.role && String(u.role).toLowerCase() === "admin") return true;
-  if (Array.isArray(u.roles) && u.roles.map(String).includes("admin")) return true;
-  return !!u.isAdmin;
-};
-
 // 토큰 후보 가져오기 (일반/관리자 전부 커버)
 const pickStoredToken = (contextUser) => {
   const c = [

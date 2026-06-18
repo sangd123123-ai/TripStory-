@@ -1,7 +1,7 @@
 // src/context/AuthContext.jsx
 import React, { createContext, useCallback, useEffect, useState } from 'react';
 import { Auth } from '../assets/api/index'; // 일반 유저용
-import axios from 'axios';
+import AdminApi from '../assets/api/admin';
 
 export const AuthContext = createContext({
   user: null,
@@ -15,29 +15,20 @@ export default function AuthProvider({ children }) {
 
   const reload = useCallback(async () => {
     try {
-      // 현재 로그인 쿠키를 보고 일반/관리자 판단
-      const isAdmin = document.cookie.includes('admin_refresh');
+      const admin = await AdminApi.me().catch(async () => {
+        await AdminApi.manualRefresh().catch(() => null);
+        return AdminApi.me().catch(() => null);
+      });
 
-      if (isAdmin) {
-        // ✅ 관리자 토큰 갱신 시도
-        await axios.post('/admin-auth/refresh', {}, { withCredentials: true }).catch(() => {});
-        const res = await axios.get('/admin-auth/me', {
-          withCredentials: true,
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem('adminAccessToken') || ''}`,
-          },
-        });
-        if (res.data?.user) {
-          setUser(res.data.user);
-          return;
-        }
-      } else {
-        // ✅ 일반 유저 토큰 갱신 및 정보 요청
-        await Auth.bootRefresh().catch(() => {});
-        const me = await Auth.me();
-        setUser(me || null);
+      if (admin) {
+        setUser(admin);
         return;
       }
+
+      await Auth.bootRefresh().catch(() => {});
+      const me = await Auth.me();
+      setUser(me || null);
+      return;
     } catch (err) {
       console.error('[AuthContext] reload error:', err);
       setUser(null);

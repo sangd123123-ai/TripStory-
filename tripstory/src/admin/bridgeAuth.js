@@ -3,7 +3,8 @@ import AdminApi, { http as adminHttp } from '../assets/api/admin';
 import { Auth } from '../assets/api/index';
 
 // 공용 키(참고용): 관리자 액세스 토큰
-export const ADMIN_ACCESS_KEY = 'adminAccessToken';
+export const ADMIN_ACCESS_KEY = 'adminAccess';
+const LEGACY_ADMIN_ACCESS_KEY = 'adminAccessToken';
 
 /** 관리자 로그인 성공 시, 유저/관리자 모두에 토큰 주입 */
 export function syncFromAdminLogin(accessToken) {
@@ -13,6 +14,7 @@ export function syncFromAdminLogin(accessToken) {
       AdminApi.setAccessToken(accessToken);
     } else {
       localStorage.setItem(ADMIN_ACCESS_KEY, accessToken);
+      localStorage.removeItem(LEGACY_ADMIN_ACCESS_KEY);
       adminHttp.defaults.headers.Authorization = `Bearer ${accessToken}`;
     }
 
@@ -30,6 +32,7 @@ export function clearBothSessions() {
     if (typeof AdminApi.setAccessToken === 'function') AdminApi.setAccessToken(null);
     else {
       localStorage.removeItem(ADMIN_ACCESS_KEY);
+      localStorage.removeItem(LEGACY_ADMIN_ACCESS_KEY);
       delete adminHttp.defaults.headers.Authorization;
     }
     Auth.setAccessToken(null);
@@ -49,6 +52,7 @@ export async function tryAdminRefreshFallback() {
       if (typeof AdminApi.setAccessToken === 'function') AdminApi.setAccessToken(at);
       else {
         localStorage.setItem(ADMIN_ACCESS_KEY, at);
+        localStorage.removeItem(LEGACY_ADMIN_ACCESS_KEY);
         adminHttp.defaults.headers.Authorization = `Bearer ${at}`;
       }
       Auth.setAccessToken(at);

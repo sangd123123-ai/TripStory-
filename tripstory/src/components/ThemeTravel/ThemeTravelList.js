@@ -115,7 +115,7 @@ function ThemeTravelList() {
     };
 
     loadTravels();
-  }, [selectedCategory]);
+  }, [API_BASE, selectedCategory]);
 
   const categories = [
     { icon: '✨', name: '인생샷 감성 여행' },

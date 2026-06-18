@@ -5,9 +5,17 @@ const API_BASE = process.env.REACT_APP_API_URL || '';
 
 // --- 토큰 저장 (관리자만 쓰는 전용 key) ---
 const KEY = 'adminAccess';
-const getToken = () => localStorage.getItem(KEY);
-const setToken = (t) =>
-  t ? localStorage.setItem(KEY, t) : localStorage.removeItem(KEY);
+const LEGACY_KEY = 'adminAccessToken';
+const getToken = () => localStorage.getItem(KEY) || localStorage.getItem(LEGACY_KEY);
+const setToken = (t) => {
+  if (t) {
+    localStorage.setItem(KEY, t);
+    localStorage.removeItem(LEGACY_KEY);
+  } else {
+    localStorage.removeItem(KEY);
+    localStorage.removeItem(LEGACY_KEY);
+  }
+};
 
 // --- refresh: 쿠키 기반 재발급 ---
 async function refresh() {
@@ -121,7 +129,7 @@ const AdminApi = {
   // 내 정보
   async me() {
     const { data } = await admin.get('/admin-auth/me');
-    return data;
+    return data?.user || null;
   },
 
   // 토큰 getter/setter

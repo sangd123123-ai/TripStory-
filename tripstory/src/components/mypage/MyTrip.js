@@ -23,7 +23,7 @@ const [showModal, setShowModal] = useState(false);            // 여행 추가/�
 const [showPendingModal, setShowPendingModal] = useState(false); // 승인 대기 여행
 const [showDetailModal, setShowDetailModal] = useState(false);   // 여행 상세 보기
 const [editingTrip, setEditingTrip] = useState(null);         // 수정 중인 여행 데이터
-const [selectedTrip, setSelectedTrip] = useState(null);       // 클릭 시 선택된 여행
+const [, setSelectedTrip] = useState(null);                   // 상세보기 닫기/초기화용
 const [selectedLocation, setSelectedLocation] = useState(null); // 지역 필터 선택
 const [showGuideModal, setShowGuideModal] = useState(false);   // 안내 모달
 const [detailTrip, setDetailTrip] = useState(null);            // 상세보기용 데이터
@@ -36,7 +36,7 @@ const [bulkApprovalResults, setBulkApprovalResults] = useState([]);        // �
 // ✅ 승인 확인 / 재전송
 const [showResendModal, setShowResendModal] = useState(false);   // 거부된 여행 재전송 모달
 const [resendTrip, setResendTrip] = useState(null);              // 재전송 대상 여행
-const [confirmedApprovals, setConfirmedApprovals] = useState(()=>{// 승인 확인 완료 ID 목록
+const [confirmedApprovals] = useState(()=>{// 승인 확인 완료 ID 목록
   const saved = localStorage.getItem('confirmedApprovals')
   return saved ? new Set(JSON.parse(saved)):new Set()
 })
@@ -105,6 +105,8 @@ useEffect(() => {//페이지 실행 시 여행 기록 가져오기
 
 useEffect(()=>{//trips변경 시에도 pendingTrips 갱신
   fetchPendingTrips()
+// 승인 대기 목록은 기존 fetchPendingTrips 흐름을 유지하기 위해 trips 변화에만 맞춰 갱신한다.
+// eslint-disable-next-line react-hooks/exhaustive-deps
 },[trips])
 
 //방문 지역 수 계산

@@ -3,7 +3,6 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { AiOutlineHeart, AiFillHeart } from 'react-icons/ai';
 import { BiCommentDetail } from 'react-icons/bi';
 import { IoEyeOutline } from 'react-icons/io5';
-import api from '../../assets/api/index';
 import './TravelReview.css';
 
 const API_BASE = process.env.REACT_APP_API_URL?.trim() || "";
@@ -180,47 +179,6 @@ export default function TravelReviewList() {
     for (let i = start; i <= end; i++) pages.push(i);
     return pages;
   }, [meta.page, meta.totalPages]);
-
-  // ---------- Like Toggle (axios api 사용으로 통일) ----------
-  const toggleLike = async (id) => {
-    const upd = (list, f) => list.map((x) => (x._id === id ? f(x) : x));
-    const before = pagedItems.find((x) => x._id === id);
-    if (!before) return;
-
-    const optimisticLiked = !before.liked;
-    const optimisticLikeCount = Math.max(
-      0,
-      Number(before.likeCount || 0) + (optimisticLiked ? 1 : -1)
-    );
-
-    // Optimistic UI
-    setPagedItems((l) => upd(l, (x) => ({ ...x, liked: optimisticLiked, likeCount: optimisticLikeCount })));
-    setRawItems((l) => upd(l, (x) => (x._id === id ? { ...x, liked: optimisticLiked, likeCount: optimisticLikeCount } : x)));
-
-    try {
-      const { data: js } = await api.post(`/api/travel-reviews/${id}/like`, null, {
-        withCredentials: true,
-      });
-
-      const svLiked =
-        typeof js?.liked === 'boolean'
-          ? js.liked
-          : (typeof js?.data?.liked === 'boolean' ? js.data.liked : optimisticLiked);
-
-      const svLikeCount = Number(
-        js?.likeCount ?? js?.data?.likeCount ?? js?.data?.likes ?? optimisticLikeCount
-      );
-
-      setPagedItems((l) => upd(l, (x) => ({ ...x, liked: svLiked, likeCount: svLikeCount })));
-      setRawItems((l) => upd(l, (x) => (x._id === id ? { ...x, liked: svLiked, likeCount: svLikeCount } : x)));
-    } catch (e) {
-      // 실패 시 원복
-      setPagedItems((l) => upd(l, (x) => (x._id === id ? before : x)));
-      setRawItems((l) => upd(l, (x) => (x._id === id ? before : x)));
-      const msg = e?.response?.data?.message || e?.message || '좋아요 실패';
-      alert(msg);
-    }
-  };
 
   if (loading) return <div className="travel-review-container loading">불러오는 중…</div>;
   if (error) return (

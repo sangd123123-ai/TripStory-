@@ -5,13 +5,10 @@ import MyProfile from './MyProfile';
 import TravelStamp from './TravelStamp';
 import MyTrip from './MyTrip';
 import './MyPage.css';
-import { useNavigate } from 'react-router-dom';
 import api from '../../assets/api/index'; // 공용 axios 인스턴스 (admin 토큰도 sync됨)
 import MyCoupons from './MyCoupons';
 
 const MyPageMain = ({ user }) => {
-  const navigate = useNavigate();
-
   // ✅ 1) 초기값을 props로 받은 user로 시작한다.
   //    이렇게 하면 관리자 로그인으로 진입했을 때도 최소한 헤더에 쓰인 정보 수준은 바로 출력 가능.
   const [login, setLogin] = useState(user || null);
@@ -47,7 +44,7 @@ const MyPageMain = ({ user }) => {
             if (adminMe) {
               setLogin(adminMe);
               setError('');
-            } else if (!login && !user) {
+            } else if (!user) {
               // props로도 없고 API에서도 못 받으면 에러
               setError('현재 정보를 불러올 수 없습니다.😢');
             }
@@ -55,7 +52,7 @@ const MyPageMain = ({ user }) => {
         } catch (err2) {
           console.error('[MyPageMain] /admin-auth/me 도 실패', err2);
           if (!cancelled) {
-            if (!login && !user) {
+            if (!user) {
               // 진짜 아무 정보도 없을 때만 에러 띄우자
               setError('현재 정보를 불러올 수 없습니다.😢');
             }

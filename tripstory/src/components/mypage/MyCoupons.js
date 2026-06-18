@@ -38,19 +38,6 @@ export default function MyCoupons() {
     }
   };
 
-  // 쿠폰 사용 처리
-  const redeem = async (couponId) => {
-    if (!couponId) return;
-    if (!window.confirm('이 쿠폰을 사용 처리할까요? 사용 후에는 복구할 수 없습니다.')) return;
-    try {
-      await api.post(`/api/coupons/${couponId}/redeem`);
-      await fetchCoupons();
-    } catch (e) {
-      console.error('[MyCoupons] redeem error:', e?.response?.data || e.message);
-      alert('사용 처리에 실패했어요.');
-    }
-  };
-
   // 마운트 시 로드 + (선택) 발급 이벤트 응답
   useEffect(() => {
     fetchCoupons();
@@ -232,7 +219,7 @@ export default function MyCoupons() {
             data-collapsible={isCollapsible ? 'true' : 'false'}
             style={
               !isExpanded && isCollapsible && collapsedMax
-                ? { ['--collapsed-max']: `${collapsedMax}px` }
+                ? { '--collapsed-max': `${collapsedMax}px` }
                 : undefined
             }
             aria-expanded={isExpanded}

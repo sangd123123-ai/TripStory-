@@ -83,6 +83,8 @@ export default function WeatherMap() {
 
       setDrawerOpen(true);
     });
+  // 지도 객체는 SDK 준비 직후 한 번만 만들고, 이후 좌표 변경은 별도 effect에서 처리한다.
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [naverReady]);
 
   // 3) position 바뀌면 지도 센터 이동
