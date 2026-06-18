@@ -14,6 +14,12 @@ const VisitorLog = mongoose.model('visitorlogs');
 const router = express.Router();
 const adminRequired = [requireUser, requireAdmin];
 
+// 사용자 스탬프 등급 기준과 관리자 통계 기준을 맞춘다.
+function getStampGradeName(count) {
+  const level = Math.min(Math.floor(count / 3), 4);
+  return ['새싹', '탐험가', '마스터', '전문가', '레전드'][level];
+}
+
 // KST(UTC+9) 하루 경계 계산
 function getKSTDayRange(date = new Date()) {
   const now = date;
@@ -82,11 +88,15 @@ router.get('/total-users', adminRequired, async (_req, res) => {
   }
 });
 
-// 마스터 등급 수(유저 role 기반) — 기존 서비스 호환 목적
+// 마스터 등급 수(스탬프 등급 기반) — 사용자 등급 기준과 동일하게 계산
 router.get('/master-count', adminRequired, async (_req, res) => {
   try {
-    const count = await User.countDocuments({ role: 'master', isBlocked: { $ne: true } });
-    res.json({ count });
+    const [result] = await Stamp.aggregate([
+      { $group: { _id: '$userId', count: { $sum: 1 } } },
+      { $match: { count: { $gte: 6, $lt: 9 } } },
+      { $count: 'count' },
+    ]);
+    res.json({ count: result?.count ?? 0 });
   } catch (e) {
     console.error('[admin-stats] master-count', e.message);
     res.status(500).json({ error: 'INTERNAL_ERROR' });
@@ -103,14 +113,10 @@ router.get('/stamp-stats', adminRequired, async (_req, res) => {
       { $group: { _id: '$userId', count: { $sum: 1 } } },
     ]);
 
-    const stats = { '새싹': 0, '탐험가': 0, '전문가': 0, '마스터': 0, '레전드': 0 };
+    const stats = { '새싹': 0, '탐험가': 0, '마스터': 0, '전문가': 0, '레전드': 0 };
 
     for (const { count } of agg) {
-      if (count < 5) stats['새싹']++;
-      else if (count < 10) stats['탐험가']++;
-      else if (count < 20) stats['전문가']++;
-      else if (count < 30) stats['마스터']++;
-      else stats['레전드']++;
+      stats[getStampGradeName(count)]++;
     }
 
     res.json(stats);
