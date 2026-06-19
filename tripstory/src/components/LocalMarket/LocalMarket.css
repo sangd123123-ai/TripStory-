@@ -1,10 +1,10 @@
 /* ======================================================
-   [LocalMarket v2.4] 제품 중심 여행로컬마켓
+   [LocalMarket v2.4] 지역 혜택 보관함
    - 배너 전구(방문 혜택 안내) 포털 팝오버 스타일 추가
    - 카드 #태그 제거 (모달은 유지)
    - 방문 진행도 5칸 스텝
    - 인증 뱃지(정부/지자체 인증 느낌) 톤 적용
-   - 모달: 판매가(취소선) | 쿠폰 적용가 가로 배치, 총 할인액 한 줄
+   - 모달: 기준가(취소선) | 혜택 적용가 가로 배치, 예상 혜택 한 줄
    - 인증 뱃지와 별점 간격/줄바꿈 보완
    ====================================================== */
 
@@ -449,7 +449,7 @@
 .product-modal-tags { display: flex; flex-wrap: wrap; gap: 8px; }
 .tag-big { background: #F0F7FF; color: #1976D2; padding: 6px 14px; border-radius: 10px; font-size: 0.9rem; font-weight: 600; }
 
-/* ===== 모달 가격: 가로 배치(판매가 | 쿠폰가) + 총 할인액 */
+/* ===== 모달 혜택: 가로 배치(기준가 | 혜택가) + 예상 혜택 */
 .product-modal-price {
   background: linear-gradient(135deg, #FFFDF2 0%, #FFF8E1 100%);
   border: 2px solid rgba(255, 215, 0, 0.3);

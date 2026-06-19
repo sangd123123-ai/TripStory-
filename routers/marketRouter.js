@@ -2,6 +2,9 @@
 const express = require('express');
 const router = express.Router();
 const Vendor = require('../models/Vendor');
+const { requireUser, requireAdmin } = require('../middlewares/auth');
+
+const adminRequired = [requireUser, requireAdmin];
 
 // ✅ GET /api/market/vendors - 단순화
 router.get('/vendors', async (req, res) => {
@@ -30,18 +33,18 @@ router.get('/vendors', async (req, res) => {
 });
 
 // ✅ POST /api/market/vendors - 표준화 제거
-router.post('/vendors', async (req, res) => {
+router.post('/vendors', adminRequired, async (req, res) => {
   try {
     const doc = await Vendor.create(req.body); // ✅ enum으로 검증됨
     return res.json({ ok: true, item: doc });
   } catch (e) {
     console.error('[market/vendors POST] error:', e);
-    return res.status(400).json({ ok: false, message: '생산자 등록 실패' });
+    return res.status(400).json({ ok: false, message: '제휴처 등록 실패' });
   }
 });
 
 // ✅ PUT /api/market/vendors/:id
-router.put('/vendors/:id', async (req, res) => {
+router.put('/vendors/:id', adminRequired, async (req, res) => {
   try {
     const { id } = req.params;
     const doc = await Vendor.findByIdAndUpdate(id, req.body, { new: true });

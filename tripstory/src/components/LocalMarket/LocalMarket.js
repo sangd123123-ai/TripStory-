@@ -20,9 +20,9 @@ const REGIONS = [
 const SORT_OPTIONS = [
   { key: 'latest', label: '최신순' },
   { key: 'popular', label: '인기순' },
-  { key: 'price-low', label: '가격 낮은순' },
-  { key: 'price-high', label: '가격 높은순' },
-  { key: 'discount', label: '할인율 높은순' },
+  { key: 'price-low', label: '기준가 낮은순' },
+  { key: 'price-high', label: '기준가 높은순' },
+  { key: 'discount', label: '혜택 큰순' },
 ];
 
 const CHO = ['ㄱ','ㄲ','ㄴ','ㄷ','ㄸ','ㄹ','ㅁ','ㅂ','ㅃ','ㅅ','ㅆ','ㅇ','ㅈ','ㅉ','ㅊ','ㅋ','ㅌ','ㅍ','ㅎ'];
@@ -72,7 +72,7 @@ function BannerBenefitPopover({ anchor, onClose }){
       <div className="banner-help-pop-head">🎁 방문 혜택 안내</div>
       <div className="banner-help-pop-body">
         <p className="banner-help-pop-desc">
-          지역을 방문하면 자동으로 적립되어 쿠폰이 발급돼요. 조건을 채우면 결제 시 자동 적용됩니다.
+          여행 기록과 방문 인증을 쌓으면 지역별 혜택 쿠폰이 열립니다. 쿠폰은 이 페이지에서 사용 처리할 수 있어요.
         </p>
         <ul className="benefit-steps">
           <li><span>신규 가입</span><strong>웰컴 5%</strong></li>
@@ -101,22 +101,21 @@ function BannerBenefitPopover({ anchor, onClose }){
    - 'issued' 상태는 스키마에 없으므로 제외 (active|used|expired만 존재)
    ========================================================= */
 function useCouponHelpers(coupons){
-  const discountPercentFor = useCallback((regionName)=>{
-    let max = 0;
-    for (const c of (coupons||[])) {
-      if (c && c.region === regionName && c.status === 'active') {
-        const pct = Number(c.discount || 0);
-        if (pct > max) max = pct;
-      }
-    }
-    return max; // 0이면 쿠폰 없음
+  const activeCouponFor = useCallback((regionName)=>{
+    return (coupons || [])
+      .filter(c => c && c.region === regionName && c.status === 'active')
+      .sort((a, b) => Number(b.discount || 0) - Number(a.discount || 0))[0] || null;
   },[coupons]);
+
+  const discountPercentFor = useCallback((regionName)=>{
+    return Number(activeCouponFor(regionName)?.discount || 0);
+  },[activeCouponFor]);
 
   const hasCouponFor = useCallback((regionName)=>{
     return discountPercentFor(regionName) > 0;
   },[discountPercentFor]);
 
-  return { discountPercentFor, hasCouponFor };
+  return { activeCouponFor, discountPercentFor, hasCouponFor };
 }
 
 function ProductCard({ product, vendor, discountPercent, visitCount, onClick }) {
@@ -159,29 +158,29 @@ function ProductCard({ product, vendor, discountPercent, visitCount, onClick }) 
         <div className="product-price-section">
           {hasDiscount ? (
             <>
-              <div className="price-label-text">💰 판매가</div>
+              <div className="price-label-text">💰 기준가</div>
               <div className="price-original-striked">{formatPrice(originalPrice)}</div>
-              <div className="price-coupon-label">🎫 {discountPercent}% 쿠폰 적용가</div>
+              <div className="price-coupon-label">🎫 {discountPercent}% 혜택가</div>
               <div className="price-discount-huge">{formatPrice(discountPrice)}</div>
-              <div className="price-save-text">{formatPrice(originalPrice - discountPrice)} 절약!</div>
+              <div className="price-save-text">{formatPrice(originalPrice - discountPrice)} 혜택</div>
             </>
           ) : (
             <>
-              <div className="price-label-text">💰 판매가</div>
+              <div className="price-label-text">💰 기준가</div>
               <div className="price-normal-huge">{formatPrice(originalPrice)}</div>
             </>
           )}
         </div>
       </div>
 
-      <button className="product-card-btn" onClick={(e)=>{ e.stopPropagation(); if(vendor.contact?.url) window.open(vendor.contact.url,'_blank'); }}>
-        🛒 구매하기
+      <button className="product-card-btn" onClick={(e)=>{ e.stopPropagation(); onClick(product, vendor); }}>
+        혜택 보기
       </button>
     </div>
   );
 }
 
-function ProductDetailModal({ product, vendor, discountPercent, onClose }) {
+function ProductDetailModal({ product, vendor, discountPercent, activeCoupon, redeeming, onRedeem, onClose }) {
   if (!product || !vendor) return null;
 
   const originalPrice = product.price || 0;
@@ -221,23 +220,23 @@ function ProductDetailModal({ product, vendor, discountPercent, onClose }) {
               </div>
             )}
 
-            {/* 💳 가격 섹션: 가로 2열 + 총 할인액 */}
+            {/* 💳 혜택 섹션: 가로 2열 + 예상 혜택 */}
             <div className="product-modal-price product-modal-price--row">
               <div className="price-col">
-                <div className="price-label">💰 판매가</div>
+                <div className="price-label">💰 기준가</div>
                 <div className="price-original-line">{formatPrice(originalPrice)}</div>
               </div>
 
               <div className="price-col">
-                <div className="price-label-coupon">🎫 쿠폰 적용가 ({discountPercent || 0}%)</div>
+                <div className="price-label-coupon">🎫 혜택 적용가 ({discountPercent || 0}%)</div>
                 <div className="price-discount-inline">
-                  {showNumeric ? formatPrice(hasDiscount ? discountPrice : originalPrice) : '쿠폰 적용가 산정중'}
+                  {showNumeric ? formatPrice(hasDiscount ? discountPrice : originalPrice) : '혜택가 산정중'}
                 </div>
               </div>
             </div>
 
             {showNumeric && hasDiscount && (
-              <div className="price-save price-save-inline">총 할인액: {formatPrice(discountAmount)}</div>
+              <div className="price-save price-save-inline">예상 혜택: {formatPrice(discountAmount)}</div>
             )}
 
             {vendor.contact?.address && (
@@ -245,17 +244,21 @@ function ProductDetailModal({ product, vendor, discountPercent, onClose }) {
             )}
 
             <div className="product-modal-actions">
-              {vendor.contact?.url ? (
-                <a href={vendor.contact.url} target="_blank" rel="noreferrer" className="product-modal-buy-btn">🛒 구매하러 가기</a>
+              {activeCoupon ? (
+                <button className="product-modal-buy-btn" onClick={onRedeem} disabled={redeeming}>
+                  {redeeming ? '쿠폰 사용 처리 중...' : '쿠폰 사용하기'}
+                </button>
+              ) : vendor.contact?.url ? (
+                <a href={vendor.contact.url} target="_blank" rel="noreferrer" className="product-modal-buy-btn">제휴처 보기</a>
               ) : (
-                <button className="product-modal-buy-btn" disabled>구매 링크 준비중</button>
+                <button className="product-modal-buy-btn" disabled>혜택 준비중</button>
               )}
             </div>
 
             {!hasDiscount && (
               <div className="product-modal-coupon-hint">
-                💡 현재 쿠폰이 없어도 미리보기로 적용가와 총 할인액을 보여드려요.<br/>
-                이 지역 조건을 달성하면 결제에서 자동 할인됩니다.
+                아직 이 지역에서 사용할 수 있는 쿠폰이 없어요.<br/>
+                여행 기록 승인과 방문 혜택 조건을 채우면 쿠폰을 사용할 수 있습니다.
               </div>
             )}
           </div>
@@ -280,6 +283,7 @@ export default function LocalMarket() {
 
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [selectedVendor, setSelectedVendor] = useState(null);
+  const [redeeming, setRedeeming] = useState(false);
 
   /* ---------- 🔔 전구(방문 혜택) 상태/위치 ---------- */
   const [showBenefit, setShowBenefit] = useState(false);
@@ -356,7 +360,27 @@ export default function LocalMarket() {
   },[allVendors]);
 
   // 🎟️ 쿠폰 계산 헬퍼
-  const { discountPercentFor } = useCouponHelpers(coupons);
+  const { activeCouponFor, discountPercentFor } = useCouponHelpers(coupons);
+
+  const handleRedeemCoupon = useCallback(async () => {
+    if (!selectedVendor) return;
+    const coupon = activeCouponFor(selectedVendor.region);
+    if (!coupon?._id) return;
+    if (!window.confirm(`${selectedVendor.region} ${coupon.discount}% 쿠폰을 사용 처리할까요?`)) return;
+
+    setRedeeming(true);
+    try {
+      await api.post(`/api/coupons/${coupon._id}/redeem`);
+      await loadData();
+      setSelectedProduct(null);
+      setSelectedVendor(null);
+      alert('쿠폰이 사용 처리되었습니다.');
+    } catch (e) {
+      alert(e?.response?.data?.message || '쿠폰 사용 처리에 실패했습니다.');
+    } finally {
+      setRedeeming(false);
+    }
+  }, [activeCouponFor, loadData, selectedVendor]);
 
   const filteredProducts = useMemo(()=>{
     let r=[...allProducts];
@@ -400,11 +424,11 @@ export default function LocalMarket() {
     <div className="local-market-wrapper">
       <div className="market-banner-v2">
         <div className="banner-content">
-          <h1 className="banner-title">🛒 여행 로컬마켓</h1>
-          <p className="banner-subtitle">지역 특산물을 할인가에 만나보세요</p>
+          <h1 className="banner-title">🎫 지역 혜택 보관함</h1>
+          <p className="banner-subtitle">여행 기록으로 열린 지역 쿠폰과 제휴 혜택을 확인하세요</p>
           <div className="banner-stats">
-            <span>🏪 등록 생산자 {allVendors.length}곳</span>
-            <span>📦 등록 상품 {allProducts.length}개</span>
+            <span>🏪 제휴처 예시 {allVendors.length}곳</span>
+            <span>📦 혜택 항목 {allProducts.length}개</span>
             <span>🎫 보유 쿠폰 {coupons.filter(c=>c.status==='active').length}장</span>
           </div>
           {/* 🔔 배너 하단 안내 문구(기존 스타일과 어울림) */}
@@ -432,7 +456,7 @@ export default function LocalMarket() {
         <div className="search-box-v2">
           <input
             type="text"
-            placeholder="🔍 제품명, 생산자, 지역 검색 (초성 가능: ㅂㅅ → 부산)"
+            placeholder="🔍 혜택명, 제휴처, 지역 검색 (초성 가능: ㅂㅅ → 부산)"
             value={searchTerm}
             onChange={(e)=>setSearchTerm(e.target.value)}
             className="search-input-v2"
@@ -489,6 +513,9 @@ export default function LocalMarket() {
           product={selectedProduct}
           vendor={selectedVendor}
           discountPercent={discountPercentFor(selectedVendor.region)}
+          activeCoupon={activeCouponFor(selectedVendor.region)}
+          redeeming={redeeming}
+          onRedeem={handleRedeemCoupon}
           onClose={()=>{ setSelectedProduct(null); setSelectedVendor(null); }}
         />
       )}
