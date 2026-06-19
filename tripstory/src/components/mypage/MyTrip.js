@@ -361,27 +361,10 @@ const hashtagArray = formData.hashtags
   if (!stampNoticeData?.tripId) return console.error('DATA가 없습니다.')
 
   try {
-    //1. 승인된 여행 데이터를 사용자 여행 기록에 추가
     const approvedTrip = pendingTrips.find(t => t._id === stampNoticeData.tripId);
     if (!approvedTrip) return alert('승인 정보를 찾을 수 없습니다.');
-    //2. 중복 확인
-      const alreadyExists = trips.some(
-        t =>
-          t.location === approvedTrip.location &&
-          t.title === approvedTrip.title &&
-          t.date === approvedTrip.date
-      );
-      //3. 여행 기록 추가(중복이 아닐 경우)
-        if (!alreadyExists) {
-          await mytripService.addTrip({
-            location: approvedTrip.location,
-            title: approvedTrip.title,
-            date: approvedTrip.date,
-            content: approvedTrip.content,
-            hashtags: approvedTrip.hashtags,
-          });
-        }
-    //4. 승인 완료 처리(백엔드에서 상태변경)
+
+    // 서버에서 여행 기록 저장, 쿠폰 발급, 승인 완료 처리를 함께 보장한다.
     await mytripService.completeTrip(stampNoticeData.tripId)
     
     closeStampModal()//모달창 먼저 닫기
@@ -418,26 +401,7 @@ const hashtagArray = formData.hashtags
       
       for (const trip of approvedTrips) {
         try {
-          // 중복 확인
-          const alreadyExists = trips.some(
-            t =>
-              t.location === trip.location &&
-              t.title === trip.title &&
-              t.date === trip.date
-          );
-
-          // 여행 기록 추가 (중복이 아닐 경우)
-          if (!alreadyExists) {
-            await mytripService.addTrip({
-              location: trip.location,
-              title: trip.title,
-              date: trip.date,
-              content: trip.content,
-              hashtags: trip.hashtags,
-            });
-          }
-
-          // 승인 완료 처리
+          // 서버에서 여행 기록 저장, 쿠폰 발급, 승인 완료 처리를 함께 보장한다.
           await mytripService.completeTrip(trip._id);
 
           // 현재 해당 지역 방문 횟수 조회
