@@ -9,6 +9,7 @@ const mytrip = mongoose.model('mytripdbs')
 const User = mongoose.model('userdbs')
 
 const auth = require('./auth');
+const { issueByVisit } = require('./couponRouter');
 const { requireUser, requireAdmin } = require('../middlewares/auth');
 
 // ✅ 유저 인증 미들웨어 그대로 유지
@@ -131,14 +132,45 @@ router.post('/complete/:id', authRequired, async (req, res) => {
     const trip = await approvalTrip.findById(tripId)
     if (!trip) return res.status(404).json({ error: 'Trip not found' })
 
+    if (trip.status !== 'approved') {
+      return res.status(400).json({ error: 'Approved trip required' })
+    }
+
     // 해당 사용자의 승인 요청만 완료 처리 가능
     if (trip.userId.toString() !== userId.toString()) {
       return res.status(403).json({ error: 'Permission denied' })
     }
 
+    const tripPayload = {
+      userId,
+      location: trip.location,
+      title: trip.title,
+      date: trip.date,
+      content: trip.content || '',
+      hashtags: trip.hashtags || [],
+    }
+
+    const savedTrip = await mytrip.findOneAndUpdate(
+      {
+        userId,
+        location: trip.location,
+        title: trip.title,
+        date: trip.date,
+      },
+      { $setOnInsert: tripPayload },
+      { new: true, upsert: true }
+    )
+
+    let couponResult = null
+    try {
+      couponResult = await issueByVisit(userId, trip.location, true)
+    } catch (couponErr) {
+      console.error('승인 완료 후 쿠폰 발급 실패:', couponErr)
+    }
+
     trip.status = 'completed'
     await trip.save()
-    res.json({ success: true })
+    res.json({ success: true, trip: savedTrip, coupon: couponResult })
   } catch (err) {
     console.error('승인 완료 처리 오류:', err)
     res.status(500).json({ error: 'Internal Server Error' })

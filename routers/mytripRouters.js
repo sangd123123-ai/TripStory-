@@ -9,9 +9,6 @@ const mytrip = mongoose.model('mytripdbs')
 //authRequired 재사용 (auth.js에서 export 했으므로)
 const { authRequired } = require('./auth')
 
-// ✅ 쿠폰 자동 발급을 위한 import
-const { issueByVisit } = require('./couponRouter')
-
 const router = express.Router()
 
 // 내 여행 목록 (로그인 필요, 내 것만)
@@ -20,22 +17,11 @@ router.get('/trip', authRequired, async (req, res) => {
   return res.status(200).send(trip)
 })
 
-// 내 여행 등록 (userId 강제) + ✅ 쿠폰 자동 발급
+// 내 여행 등록 (userId 강제)
 router.post('/trip', authRequired, async (req, res) => {
   try {
     const payload = { ...req.body, userId: req.user.uid }
     const trip = await mytrip.create(payload)
-    
-    // ✅ 쿠폰 자동 발급 시도 (실패해도 여행 기록은 성공 처리)
-    if (payload.location) {
-      try {
-        await issueByVisit(payload.userId, payload.location, true)
-      } catch (couponErr) {
-        console.error('쿠폰 자동 발급 실패:', couponErr)
-        // 쿠폰 발급 실패해도 여행 기록은 성공으로 응답
-      }
-    }
-    
     return res.status(200).send({ error: false, trip })
   } catch (err) {
     console.error('여행 기록 등록 실패:', err)
@@ -67,6 +53,6 @@ module.exports = router
 
 /*
 GET    /mytrip/trip
-POST   /mytrip/trip (✅ 쿠폰 자동 발급 추가)
+POST   /mytrip/trip
 PUT    /mytrip/trip/:id
 DELETE /mytrip/trip/:id */
