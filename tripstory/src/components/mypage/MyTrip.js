@@ -358,7 +358,10 @@ const hashtagArray = formData.hashtags
 
   //여행 기록 확인 버튼 -> 승인 완료 시
   const handleConfirmApproval = async (goToStamp = false) => {
-  if (!stampNoticeData?.tripId) return console.error('DATA가 없습니다.')
+  if (!stampNoticeData?.tripId) {
+    console.error('DATA가 없습니다.')
+    return false
+  }
 
   try {
     const approvedTrip = pendingTrips.find(t => t._id === stampNoticeData.tripId);
@@ -378,11 +381,18 @@ const hashtagArray = formData.hashtags
     if (goToStamp)
       navigate('/mypage/stamp', { state: { triggerRefetch: Date.now() } });
 
+    return true
   } catch (error) {
     console.error('스탬프 승인 완료 처리 중 오류 발생:', error);
     alert('스탬프 승인 완료 처리 중 오류가 발생했습니다.\n잠시 후 다시 시도해주세요.');
+    return false
   }
 };
+
+  const handleConfirmApprovalAndGoMarket = async () => {
+    const ok = await handleConfirmApproval(false);
+    if (ok) navigate('/market');
+  };
 
   const handleBulkApproval = async () => {
     const approvedTrips = pendingTrips.filter(t => t.status === 'approved');
@@ -837,9 +847,15 @@ return (
             <p className='success-detail'>
               {stampNoticeData.location} 지역을 총 {stampNoticeData.currentCount}회 방문했습니다!<br />스탬프 페이지에서 확인해보세요.
             </p>
+            <p className='coupon-benefit-note'>
+              지역 혜택 쿠폰도 함께 확인할 수 있어요.
+            </p>
             <div className='stamp-button-group'>
               <button className='btn-go-stamp' onClick={() => handleConfirmApproval(true)}>
                 🌟 스탬프 페이지로 이동
+              </button>
+              <button className='btn-go-benefit' onClick={handleConfirmApprovalAndGoMarket}>
+                🎫 혜택관 보기
               </button>
               <button className='btn-confirm-only' onClick={() => handleConfirmApproval(false)}>
                 ✅ 확인
@@ -851,7 +867,13 @@ return (
             <p className='info-message'>
               앞으로 <strong>{stampNoticeData.requiredCount - stampNoticeData.currentCount}번</strong> 더 방문하시면<br />스탬프를 획득할 수 있습니다!
             </p>
+            <p className='coupon-benefit-note'>
+              이번 승인으로 지역 혜택 쿠폰이 열렸다면 혜택관에서 사용할 수 있어요.
+            </p>
             <div className='stamp-button-group'>
+              <button className='btn-go-benefit' onClick={handleConfirmApprovalAndGoMarket}>
+                🎫 혜택관 보기
+              </button>
               <button className='btn-confirm-only' onClick={() => handleConfirmApproval(false)}>
                 ✅ 확인
               </button>

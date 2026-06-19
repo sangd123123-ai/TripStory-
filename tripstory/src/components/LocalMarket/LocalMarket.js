@@ -486,9 +486,9 @@ export default function LocalMarket() {
         <div className="market-loading"><div className="loading-spinner-v2">불러오는 중...</div></div>
       ) : filteredProducts.length === 0 ? (
         <div className="market-empty-v2">
-          <div className="empty-icon">🔍</div>
-          <div className="empty-text">검색 결과가 없어요</div>
-          <div className="empty-hint">다른 키워드로 시도해보세요!</div>
+          <div className="empty-icon">🎫</div>
+          <div className="empty-text">아직 열린 혜택이 없어요</div>
+          <div className="empty-hint">승인된 여행 기록이 쌓이면 지역 쿠폰과 제휴 혜택을 확인할 수 있어요.</div>
         </div>
       ) : (
         <div className="product-grid">
