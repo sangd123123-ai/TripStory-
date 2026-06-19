@@ -31,6 +31,7 @@ dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 8080;
+const verboseStartup = process.env.NODE_ENV !== 'production';
 
 app.set('trust proxy', ['loopback', 'linklocal', 'uniquelocal']);
 
@@ -105,11 +106,11 @@ function mountAuto(basePathOrApp, modPath) {
     if (isRouterLike(mod)) {
       if (typeof basePathOrApp === 'string') {
         app.use(basePathOrApp, mod);
-        console.log(`mounted(router) ${basePathOrApp}: ${modPath}`);
+        if (verboseStartup) console.log(`mounted(router) ${basePathOrApp}: ${modPath}`);
       } else {
         // basePathOrApp이 app이면 base path 없이 바로 연결합니다.
         basePathOrApp.use(mod);
-        console.log(`mounted(router) (no base): ${modPath}`);
+        if (verboseStartup) console.log(`mounted(router) (no base): ${modPath}`);
       }
       return;
     }
@@ -117,7 +118,7 @@ function mountAuto(basePathOrApp, modPath) {
     // 2) 함수형 모듈: (app) => { ... }
     if (typeof mod === 'function') {
       mod(app);
-      console.log(`mounted(fn): ${modPath}`);
+      if (verboseStartup) console.log(`mounted(fn): ${modPath}`);
       return;
     }
 
@@ -125,10 +126,10 @@ function mountAuto(basePathOrApp, modPath) {
     if (mod && typeof mod === 'object') {
       if (typeof basePathOrApp === 'string') {
         app.use(basePathOrApp, mod);
-        console.log(`mounted(mw) ${basePathOrApp}: ${modPath}`);
+        if (verboseStartup) console.log(`mounted(mw) ${basePathOrApp}: ${modPath}`);
       } else {
         basePathOrApp.use(mod);
-        console.log(`mounted(mw) (no base): ${modPath}`);
+        if (verboseStartup) console.log(`mounted(mw) (no base): ${modPath}`);
       }
       return;
     }
@@ -161,7 +162,7 @@ mountAuto('/api/visit',    './routers/visitRouter');
 try {
   const noticeRouter = require('./routers/noticeRouter');
   app.use('/notices', noticeRouter);
-  console.log('mounted(router) /notices: ./routers/noticeRouter');
+  if (verboseStartup) console.log('mounted(router) /notices: ./routers/noticeRouter');
 } catch (e) {
   console.warn('/notices skipped:', e.message);
 }

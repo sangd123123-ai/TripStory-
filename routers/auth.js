@@ -451,7 +451,6 @@ router.delete('/delete', authRequired, async (req, res) => {
     // refresh 쿠키 제거
     res.clearCookie('rt', { ...refreshCookieOpts, maxAge: 0 });
 
-    console.log(`[auth/delete] 회원 ${me.userId} 삭제 완료`);
     res.json({ ok: true, message: '계정이 성공적으로 삭제되었습니다.' });
   } catch (e) {
     console.error('[auth/delete]', e);

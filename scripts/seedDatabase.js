@@ -1,12 +1,12 @@
 // seedDatabase.js (replacement)
 const path = require('path');
 const mongoose = require('mongoose');
-const TravelReview = require('./models/TravelReview');
-const Comment = require('./models/Comment');
+const TravelReview = require('../models/TravelReview');
+const Comment = require('../models/Comment');
 
 // ===== 샘플 데이터 로드 (루트 경로의 JSON 사용) =====
-const travelSamples = require(path.join(__dirname, 'travel_review_samples_europe.json'));
-const commentSamples = require(path.join(__dirname, 'comment_samples_europe.json'));
+const travelSamples = require(path.join(__dirname, '..', 'travel_review_samples_europe.json'));
+const commentSamples = require(path.join(__dirname, '..', 'comment_samples_europe.json'));
 
 const MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost:27017/tripstory';
 

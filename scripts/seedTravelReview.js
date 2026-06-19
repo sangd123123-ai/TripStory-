@@ -12,7 +12,7 @@ const mongoose = require("mongoose");
 require("dotenv").config();
 
 // 모델 (스키마: images 1장 이상, author/authorName/type 등 필수)
-const TravelReview = require("./models/TravelReview");
+const TravelReview = require("../models/TravelReview");
 
 // -------- CLI args --------
 const argv = process.argv.slice(2);
@@ -21,7 +21,7 @@ function getArg(name, fallback) {
   return ix >= 0 ? argv[ix + 1] : fallback;
 }
 
-const FROM = getArg("from", "./sampleData/travelSampleData.js");
+const FROM = getArg("from", path.join(__dirname, "..", "sampleData", "travelSampleData.js"));
 const MONGO_URI = getArg("uri", process.env.MONGODB_URI || "mongodb://127.0.0.1:27017/tripstory");
 const AUTHOR_ID_CLI = getArg("author", process.env.SEED_AUTHOR_ID || null);
 const AUTHOR_NAME = process.env.SEED_AUTHOR_NAME || "샘플작성자";

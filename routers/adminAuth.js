@@ -128,7 +128,6 @@ router.post('/register', async (req, res) => {
    ======================================================= */
 async function handleRefresh(req, res) {
   try {
-    console.log('[REFRESH] cookies =', req.cookies);
     const token = req.cookies?.[REFRESH_COOKIE_NAME];
     if (!token) return res.status(401).json({ msg: '리프레시 없음' });
 

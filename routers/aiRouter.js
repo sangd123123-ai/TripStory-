@@ -18,7 +18,6 @@ router.post('/trip', async (req, res) => {
   }
   const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
   let { region, style, duration, people, budget, transport } = req.body;
-  console.log('📦 req.body:', req.body);
 
   try {
     // ✅ 1️⃣ 지역명 정규화 (예: "부산시" → "부산")
@@ -30,8 +29,6 @@ router.post('/trip', async (req, res) => {
     })
       .limit(40)
       .lean();
-
-    console.log(`🗺️ ${normalizedRegion} 지역 데이터 개수:`, regionData.length);
 
     if (!regionData || regionData.length === 0) {
       return res.status(404).json({ error: `${region} 관련 여행 데이터가 없습니다.` });
@@ -153,8 +150,6 @@ ${JSON.stringify(context, null, 2)}
     // 🧾 6️⃣ 응답 처리
     // ==============================
     const raw = completion.choices[0].message.content;
-    console.log('🧠 Raw AI Response:', raw);
-
     let planJson;
     try {
       planJson = JSON.parse(raw);

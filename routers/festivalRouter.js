@@ -27,7 +27,6 @@ module.exports = (app) => {
   const assetsApiDir =
     CANDIDATE_DIRS.find((p) => fssync.existsSync(p)) || CANDIDATE_DIRS[0];
 
-  console.log('📂 assets-api base:', assetsApiDir);
 
   router.get('/category/:category', async (req, res) => {
     try {

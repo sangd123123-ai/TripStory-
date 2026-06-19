@@ -213,7 +213,6 @@ router.post('/ai/preview-webtoon-from-mytrip/:mytripId', authRequired, async (re
       if (hashtags && hashtags.length > 0) imagePrompt += `키워드: ${hashtags.join(', ')}.\n`;
       imagePrompt += '스타일: 한국 웹툰, 밝고 감성적인 색감, 애니메이션, 일러스트. 말풍선 없음, 글자 없음, 텍스트 없음.';
 
-      console.log(`🎨 [웹툰 컷 #${i + 1} 프롬프트]`, imagePrompt);
 
       const imageRes = await client.images.generate({
         model: "dall-e-3",
@@ -230,7 +229,6 @@ router.post('/ai/preview-webtoon-from-mytrip/:mytripId', authRequired, async (re
         const filepath = path.join(uploadsDir, filename);
         fs.writeFileSync(filepath, imgRes.data);
         savedImageUrl = `/uploads/${filename}`;
-        console.log(`✅ [웹툰 컷 #${i + 1} 저장 완료]`, savedImageUrl);
       } catch (imgErr) {
         console.error(`⚠️ [웹툰 컷 #${i + 1} 다운로드 실패]`, imgErr.message);
         savedImageUrl = tempImageUrl; // fallback
@@ -276,7 +274,6 @@ router.post('/', authRequired, async (req, res) => {
     });
 
     await newStory.save();
-    console.log('✅ [트립스토리 저장 완료]', newStory._id);
     res.status(201).json(newStory);
   } catch (err) {
     console.error("❌ [트립스토리 저장 실패]", err.message);

@@ -2,7 +2,7 @@
 const mongoose = require('mongoose');
 require('dotenv').config();
 
-require('./models/stampSchema');
+require('../models/stampSchema');
 const Stamp = mongoose.model('stampdbs');
 
 async function main() {

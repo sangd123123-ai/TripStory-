@@ -105,7 +105,6 @@ module.exports = (app) => {
 
       const filePath = path.join(__dirname, '../tripstory/src/assets/api/theme', fileName);
       
-      console.log('📂 테마여행 파일 경로:', filePath);
       
       // 파일 존재 확인
       try {

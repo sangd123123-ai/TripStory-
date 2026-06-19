@@ -7,7 +7,7 @@
  */
 const path = require('path');
 const mongoose = require('mongoose');
-const { StampModel } = require(path.join(__dirname, 'models', 'stampSchema'));
+const { StampModel } = require(path.join(__dirname, '..', 'models', 'stampSchema'));
 
 // ⚠️ 실제 사용 DB로 맞추세요 (tripstory로 보임)
 const MONGO_URI = 'mongodb://localhost:27017/tripstory';
